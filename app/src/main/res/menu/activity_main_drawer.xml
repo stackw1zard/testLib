@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_online"
+            android:icon="@drawable/operating_system"
+            android:title="Online MCQs" />
+        <item
+            android:id="@+id/nav_offline"
+            android:icon="@drawable/oflline_icon"
+            android:title="Offline MCQs" />
+        <item
+            android:id="@+id/nav_download"
+            android:icon="@drawable/status_icon"
+            android:title="Download" />
+        <item
+            android:id="@+id/nav_manual"
+            android:icon="@drawable/stack_wizard_user_manual"
+            android:title="Help" />
+    </group>
+
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/nav_profile"
+                android:icon="@drawable/stack_wizard_user"
+                android:title="Profile" />
+            <item
+                android:id="@+id/nav_add_mcq"
+                android:icon="@drawable/stack_app_menu_edit"
+                android:title="Add MCQ" />
+            <item
+                android:id="@+id/nav_leader_board"
+                android:icon="@drawable/leader_board"
+                android:title="Leader Board" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/stack_app_logout_icon"
+                android:title="Logout" />
+        </menu>
+    </item>
+
+</menu>

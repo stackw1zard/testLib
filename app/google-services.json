@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "427319483649",
+    "firebase_url": "https://mcqwizard.firebaseio.com",
+    "project_id": "mcqwizard",
+    "storage_bucket": "mcqwizard.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427319483649:android:788f903461196c3f",
+        "android_client_info": {
+          "package_name": "com.stackwizards.mcq_wizard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "427319483649-225d0p6aln44etn0m3icvfs8l293p9ac.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.stackwizards.mcq_wizard",
+            "certificate_hash": "4cb7915a4cde59853c3f02add65d5fdeba68a108"
+          }
+        },
+        {
+          "client_id": "427319483649-v50aej0tahruln6l71vdhdffis29ml5d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGpLZCDfbnyEYjTwhubiDqDmcgfZcx72c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "427319483649-v50aej0tahruln6l71vdhdffis29ml5d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
