@@ -1,0 +1,77 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context="com.stackwizards.mcq_wizard.MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="* Website: Stackwizards.org
+                        Currently under construction..."
+        android:textColor="#344534"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="* Swipe right for Drawer-Navigation"
+        android:textColor="#344534"
+        android:textSize="20sp" />
+
+    
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/status_icon"/>
+    
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="* You can download MCQ for offline use. Corretly answered question are sorted to the back for a more effective learning."
+        android:textColor="#344534"
+        android:textSize="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="* You can create your own MCQs, look at the example found at http://statckwizards.org/json/test5.json for the formatting."
+        android:textColor="#344534"
+        android:textSize="15sp" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="* You can add your own multiple choice questions,
+         by putting your json files in the app folder found in the android/data/file/myStorage/"
+        android:textColor="#344534"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="* All comments are welcome at:
+        stackwizards@gmail.com "
+        android:textColor="#344534"
+        android:textSize="25sp" />
+
+
+
+</LinearLayout>

@@ -1,9 +1,16 @@
 package com.stackwizards.mcq_wizard.entity;
 
+import java.util.ArrayList;
+
 public class Questionaire {
 
+    private String uid;
     private String iconName;
     private String jsonUrl;
+    private ArrayList<QuestionStats> questionStats;
+
+    private int score;
+
 
     public Questionaire() {
     }
@@ -24,5 +31,63 @@ public class Questionaire {
         this.jsonUrl = jsonUrl;
     }
 
+
+    public ArrayList<QuestionStats> getQuestionStats() {
+        return questionStats;
+    }
+
+    public void setQuestionStats(ArrayList<QuestionStats> questionStats) {
+        this.questionStats = questionStats;
+    }
+
+
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public  class QuestionStats{
+        String uuid;
+        int asked;
+        int answeredCorrectly;
+
+        public String getUuid() {
+            return uuid;
+        }
+
+        public void setUuid(String uuid) {
+            this.uuid = uuid;
+        }
+
+        public int getAsked() {
+            return asked;
+        }
+
+        public void setAsked(int asked) {
+            this.asked = asked;
+        }
+
+        public int getAnsweredCorrectly() {
+            return answeredCorrectly;
+        }
+
+        public void setAnsweredCorrectly(int answeredCorrectly) {
+            this.answeredCorrectly = answeredCorrectly;
+        }
+
+
+    }
 
 }

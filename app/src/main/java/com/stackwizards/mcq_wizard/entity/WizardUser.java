@@ -1,5 +1,6 @@
 package com.stackwizards.mcq_wizard.entity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +9,8 @@ public class WizardUser {
     String email;
     String bio;
     int age;
+
+    ArrayList<Questionaire> questionaires;
 
     Map<String, Integer> notes ;
 
@@ -47,6 +50,16 @@ public class WizardUser {
         this.age = age;
     }
 
+
+
+
+    public ArrayList<Questionaire> getQuestionaires() {
+        return questionaires;
+    }
+
+    public void setQuestionaires(ArrayList<Questionaire> questionaires) {
+        this.questionaires = questionaires;
+    }
 
     public Map<String, Integer> getNotes() {
         return notes;

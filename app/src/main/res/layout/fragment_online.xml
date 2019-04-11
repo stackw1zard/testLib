@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <!--<Button-->
+    <!--android:id="@+id/btnTestQuestion"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Button" />-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:padding="25dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/mcq_info_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="18dp"
+            android:text="MCQ ONLINE CHALLENGE ..." />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/question_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/verified_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <GridLayout
+                android:id="@+id/insert_point_json_files"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="center"
+                android:layout_margin="3dp"
+                android:columnCount="3"
+                android:padding="3dp"
+                android:rowCount="40">
+
+            </GridLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+
+
+
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="1dp">
+
+        <!--android:visibility="gone" />-->
+
+
+        <ScrollView
+            android:id="@+id/offline_question_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/offline_question_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Question text"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/insert_point"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/offline_question_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Question hint"
+                    android:textStyle="italic"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </ScrollView>
+
+
+        <ImageView
+            android:id="@+id/btn_next"
+            android:layout_width="80dp"
+            android:layout_height="75dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="7dp"
+            android:src="@drawable/right"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+    <TextView
+        android:id="@+id/fire_questionaires"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+
+</LinearLayout>

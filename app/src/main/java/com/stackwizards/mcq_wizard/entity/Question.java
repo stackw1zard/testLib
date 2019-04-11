@@ -3,6 +3,7 @@ package com.stackwizards.mcq_wizard.entity;
 import java.util.ArrayList;
 
 public class Question {
+    String index = null;
     String question_text;
     String answer;
     String hint;
@@ -45,6 +46,14 @@ public class Question {
 
     public int getNumOfTimesAnsweredCorrectly() {
         return numOfTimesAnsweredCorrectly;
+    }
+
+    public String getIndex() {
+        return index;
+    }
+
+    public void setIndex(String index) {
+        this.index = index;
     }
 
     public void setNumOfTimesAnsweredCorrectly(int numOfTimesAnsweredCorrectly) {

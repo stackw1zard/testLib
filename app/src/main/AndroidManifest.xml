@@ -34,6 +34,7 @@
         <activity android:name=".SignUpActivity" />
         <activity android:name=".EditActivity" />
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".FireBaseQuestionaires" />
 
 
     </application>

@@ -3,23 +3,31 @@ package com.stackwizards.mcq_wizard;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,7 +36,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
+//import com.stackwizards.fire_wizard.R;
+//import com.stackwizards.fire_wizard.entity.Questionaire;
+//import com.stackwizards.fire_wizard.entity.WizardUser;
 import com.stackwizards.mcq_wizard.entity.Questionaire;
 import com.stackwizards.mcq_wizard.entity.WizardUser;
 
@@ -170,7 +180,7 @@ public class EditActivity extends AppCompatActivity {
     private void uploadImageToFirebaseStorage() {
 
 
-        final String displayName = editText.getText().toString();
+        String displayName = editText.getText().toString() + ".png";
 
         if (displayName.isEmpty()) {
             editText.setError("Name required");
@@ -192,6 +202,7 @@ public class EditActivity extends AppCompatActivity {
             return;
         }
 
+
         Questionaire questionaire = new Questionaire();
         questionaire.setIconName(displayName);
         questionaire.setJsonUrl(jsonUrl);
@@ -204,7 +215,7 @@ public class EditActivity extends AppCompatActivity {
         dbRef.setValue(questionaire);
 
         final StorageReference profileImageRef =
-                FirebaseStorage.getInstance().getReference("questionaires/icons/" + displayName + ".png");
+                FirebaseStorage.getInstance().getReference("questionaires/icons/" + displayName );
 
         if (uriProfileImage != null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -249,7 +260,7 @@ public class EditActivity extends AppCompatActivity {
 //        MenuInterface.menuClickAction(this, item);
 //        return true;
 //    }
-
+//
     private void showImageChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
