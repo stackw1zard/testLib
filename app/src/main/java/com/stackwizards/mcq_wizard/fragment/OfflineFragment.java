@@ -1,4 +1,4 @@
-package com.stackwizards.mcq_wizard;
+package com.stackwizards.mcq_wizard.fragment;
 
 
 import android.app.Activity;
@@ -31,6 +31,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.stackwizards.mcq_wizard.R;
 import com.stackwizards.mcq_wizard.entity.Question;
 
 import org.json.JSONArray;
@@ -541,6 +542,16 @@ public class OfflineFragment extends Fragment implements  View.OnClickListener{
     }
 
 
+    private static boolean isExternalStorageAvailable() {
+        String extStorageState = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(extStorageState)) {
+            return true;
+        }
+        return false;
+    }
+
+
+
     private void saveMcqResourcesInFile(String url) {
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
@@ -565,14 +576,6 @@ public class OfflineFragment extends Fragment implements  View.OnClickListener{
         mQueue.add(request);
     }
 
-
-    private static boolean isExternalStorageAvailable() {
-        String extStorageState = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(extStorageState)) {
-            return true;
-        }
-        return false;
-    }
 
 
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.support.design.widget.NavigationView;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,6 +34,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.stackwizards.mcq_wizard.entity.WizardUser;
+import com.stackwizards.mcq_wizard.fragment.DownloadFragment;
+import com.stackwizards.mcq_wizard.fragment.HelpInfoFragment;
+import com.stackwizards.mcq_wizard.fragment.OfflineFragment;
+import com.stackwizards.mcq_wizard.fragment.OnlineFragment;
 
 
 public class MainActivity extends AppCompatActivity
@@ -52,6 +58,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
+//            mView.findViewById(R.id.saveExternalStorage).setEnabled(false);
+            navigationView.findViewById(R.id.nav_download).setVisibility(View.GONE);
+        }
+
+
         mQueue = Volley.newRequestQueue(this);
 
 
@@ -177,7 +190,7 @@ public class MainActivity extends AppCompatActivity
             loadFragment(new OfflineFragment());
 
         } else if (id == R.id.nav_download) {
-            startActivity(new Intent(this, FireBaseQuestionaires.class));
+            loadFragment(new DownloadFragment());
 
         } else if (id == R.id.nav_manual) {
             loadFragment(new HelpInfoFragment());
@@ -207,6 +220,26 @@ public class MainActivity extends AppCompatActivity
 // replace the FrameLayout with new Fragment
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit(); // save the changes
+    }
+
+
+
+
+    private static boolean isExternalStorageReadOnly() {
+        String extStorageState = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(extStorageState)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    private static boolean isExternalStorageAvailable() {
+        String extStorageState = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(extStorageState)) {
+            return true;
+        }
+        return false;
     }
 
 

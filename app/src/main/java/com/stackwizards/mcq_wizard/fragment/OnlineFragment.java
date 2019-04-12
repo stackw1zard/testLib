@@ -1,4 +1,4 @@
-package com.stackwizards.mcq_wizard;
+package com.stackwizards.mcq_wizard.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -37,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
+import com.stackwizards.mcq_wizard.R;
 import com.stackwizards.mcq_wizard.dialog.DialogResultInterface;
 import com.stackwizards.mcq_wizard.dialog.ResultDialog;
 import com.stackwizards.mcq_wizard.entity.Question;

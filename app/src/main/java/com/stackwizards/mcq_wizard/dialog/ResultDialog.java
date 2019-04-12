@@ -1,6 +1,5 @@
 package com.stackwizards.mcq_wizard.dialog;
 
-import android.app.Activity;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.stackwizards.mcq_wizard.OnlineFragment;
 import com.stackwizards.mcq_wizard.R;
 
 public class ResultDialog {

@@ -1,4 +1,4 @@
-package com.stackwizards.mcq_wizard;
+package com.stackwizards.mcq_wizard.fragment;
 
 
 import android.app.Fragment;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.stackwizards.mcq_wizard.R;
 
 
 public class HelpInfoFragment extends Fragment {
