@@ -42,6 +42,7 @@ import com.google.firebase.storage.UploadTask;
 import com.stackwizards.mcq_wizard.entity.Questionaire;
 import com.stackwizards.mcq_wizard.entity.WizardUser;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -62,6 +63,7 @@ public class EditActivity extends AppCompatActivity {
 
     DatabaseReference dbRef;
     WizardUser wizardUser;
+    Bitmap bitmap;
 
 
     @Override
@@ -140,7 +142,11 @@ public class EditActivity extends AppCompatActivity {
                 // Attach a listener to read the data at our posts reference
 //                Toast.makeText(ProfileActivity.this, "wizardUser.getBio()", Toast.LENGTH_SHORT).show();
 //                saveUserInformation();
-                uploadImageToFirebaseStorage();
+                if (bitmap != null) {
+                    uploadImageToFirebaseStorage(bitmap);
+                }else {
+                    Toast.makeText(EditActivity.this, "Bitmap is empty...", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -169,7 +175,9 @@ public class EditActivity extends AppCompatActivity {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriProfileImage);
                 imageView.setImageBitmap(bitmap);
 
-                uploadImageToFirebaseStorage();
+//                uploadImageToFirebaseStorage(bitmap);
+
+                this.bitmap =  Bitmap.createScaledBitmap(bitmap, 124, 124, true);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -177,7 +185,7 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadImageToFirebaseStorage() {
+    private void uploadImageToFirebaseStorage(Bitmap bitmap) {
 
 
         String displayName = editText.getText().toString() + ".png";
@@ -214,53 +222,71 @@ public class EditActivity extends AppCompatActivity {
 
         dbRef.setValue(questionaire);
 
-        final StorageReference profileImageRef =
-                FirebaseStorage.getInstance().getReference("questionaires/icons/" + displayName );
+//        final StorageReference profileImageRef =
+//                FirebaseStorage.getInstance().getReference("questionaires/icons/" + displayName );
+//
+//        if (uriProfileImage != null) {
+//            progressBar.setVisibility(View.VISIBLE);
+//            profileImageRef.putFile(uriProfileImage)
+//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                            progressBar.setVisibility(View.GONE);
+//                            Toast.makeText(EditActivity.this, displayName + " was uploaded", Toast.LENGTH_SHORT).show();
+//                            profileImageUrl = profileImageRef.getDownloadUrl().toString();
+//                            Bitmap bitmap = null;
+//                            try {
+//                                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriProfileImage);
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                            imageView.setImageBitmap(bitmap);
+//                        }
+//                    })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            progressBar.setVisibility(View.GONE);
+//
+//                            Toast.makeText(EditActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//        }
 
-        if (uriProfileImage != null) {
+
+        if (bitmap != null) {
             progressBar.setVisibility(View.VISIBLE);
-            profileImageRef.putFile(uriProfileImage)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(EditActivity.this, displayName + " was uploaded", Toast.LENGTH_SHORT).show();
-                            profileImageUrl = profileImageRef.getDownloadUrl().toString();
-                            Bitmap bitmap = null;
-                            try {
-                                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriProfileImage);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
 
-                            imageView.setImageBitmap(bitmap);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressBar.setVisibility(View.GONE);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
 
-                            Toast.makeText(EditActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            final StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("questionaires/icons/" + displayName );
+
+            UploadTask uploadTask = profileImageRef.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    progressBar.setVisibility(View.GONE);
+//                    profileImageUrl = profileImageRef.getDownloadUrl().toString();
+
+                }
+            });
+
         }
+
+
+
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu, menu);
-//        MenuInterface.initMenu(menu, R.id.menuProfile);
-//        return true;
-//    }
-//
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        MenuInterface.menuClickAction(this, item);
-//        return true;
-//    }
-//
+
     private void showImageChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");

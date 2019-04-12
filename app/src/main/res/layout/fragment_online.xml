@@ -17,7 +17,7 @@
         android:layout_height="50dp"
         android:orientation="horizontal"
         android:padding="15dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/mcq_info_details"
