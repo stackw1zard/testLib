@@ -1,5 +1,6 @@
 package com.stackwizards.mcq_wizard;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -7,8 +8,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Patterns;
 import android.view.View;
@@ -46,7 +47,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
 
-        LinearLayout myLayout = (LinearLayout) findViewById(R.id.activity_main_layout);
+//        LinearLayout myLayout = (LinearLayout) findViewById(R.id.activity_main_layout);
 //        myLayout.setOrientation(LinearLayout.VERTICAL);
 //        myLayout.LayoutParameters = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MatchParent, LinearLayout.LayoutParams.WrapContent);
 

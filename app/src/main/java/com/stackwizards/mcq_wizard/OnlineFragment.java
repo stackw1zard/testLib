@@ -1,5 +1,6 @@
 package com.stackwizards.mcq_wizard;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -36,6 +37,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
+import com.stackwizards.mcq_wizard.dialog.DialogResultInterface;
+import com.stackwizards.mcq_wizard.dialog.ResultDialog;
 import com.stackwizards.mcq_wizard.entity.Question;
 import com.stackwizards.mcq_wizard.entity.Questionaire;
 import com.stackwizards.mcq_wizard.entity.WizardUser;
@@ -46,15 +49,16 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static android.content.Context.AUDIO_SERVICE;
 
 
-public class OnlineFragment extends Fragment {
+public class OnlineFragment extends Fragment implements DialogResultInterface {
 
-    View view;
-    Button firstButton;
+    private View view;
+    private Context context;
+    private int pointScore = 0;
+    private Activity mActivity;
 
 
     FirebaseAuth mAuth;
@@ -62,7 +66,7 @@ public class OnlineFragment extends Fragment {
     DatabaseReference dbRef;
     DatabaseReference dbRefWizard;
     WizardUser wizardUser;
-    ViewGroup insertPointJsonFiles, offlineBaseLayout, insertPoint, offlineQuestionView;
+    ViewGroup insertPointJsonFiles, offlineBaseLayout, insertPoint, offlineQuestionView, mcqHeaderDetails;
 
     private RequestQueue mQueue;
     private ImageView mNextQuestion;
@@ -71,13 +75,12 @@ public class OnlineFragment extends Fragment {
     private ArrayList<Question> question_array;
     private List<Question> restQuestions;
     private int questionPointerNum = 0;
-    private int pointScore = 0;
 
     boolean loaded = false;
     private float volume = 0;
     private Menu mMenu;
 
-    TextView response, mQuestionText, mQuestionHint, mcqStatusInfo;
+    TextView response, mQuestionText, mQuestionHint, mcqStatusInfo, mTimerText;
 
 
     private SoundPool soundPool;
@@ -91,7 +94,8 @@ public class OnlineFragment extends Fragment {
 
     private Questionaire mQuestionaire = null;
 
-    private Context context;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -108,10 +112,12 @@ public class OnlineFragment extends Fragment {
 //                Toast.makeText(getActivity(), "Fragment's Button", Toast.LENGTH_LONG).show();
 //            }
 //        });
-        context = getContext();
+        this.mActivity = getActivity();
+        context = mActivity.getApplicationContext();
 
         offlineQuestionView = view.findViewById(R.id.offline_question_view);
 
+        mTimerText = view.findViewById(R.id.mcq_timer_text);
 
         mcqStatusInfo = view.findViewById(R.id.mcq_info_details);
 
@@ -121,7 +127,7 @@ public class OnlineFragment extends Fragment {
 
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        mQueue = Volley.newRequestQueue(getContext());
+        mQueue = Volley.newRequestQueue(context);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -131,6 +137,7 @@ public class OnlineFragment extends Fragment {
         mQuestionText = (TextView) view.findViewById(R.id.offline_question_text);
         mQuestionHint = (TextView) view.findViewById(R.id.offline_question_hint);
         insertPoint = view.findViewById(R.id.insert_point);
+        mcqHeaderDetails = view.findViewById(R.id.mcq_header_details);
 
         mNextQuestion = view.findViewById(R.id.btn_next);
         mNextQuestion.setOnClickListener(new View.OnClickListener() {
@@ -195,7 +202,7 @@ public class OnlineFragment extends Fragment {
                                                 mQuestionaire = questionaire;
 
                                                 question_array = jsonParse(questionaire.getJsonUrl());
-                                                Toast.makeText(getContext(), " GOING TO FETCH: " + questionaire.getJsonUrl() + "  " + question_array.size(), Toast.LENGTH_LONG).show();
+                                                Toast.makeText(context, " GOING TO FETCH: " + questionaire.getJsonUrl() + "  " + question_array.size(), Toast.LENGTH_LONG).show();
                                                 insertPointJsonFiles.setVisibility(View.GONE);
                                                 ((ViewGroup) view.findViewById(R.id.offline_question_view)).setVisibility(View.VISIBLE);
                                                 ((ImageView) view.findViewById(R.id.btn_next)).setVisibility(View.VISIBLE);
@@ -278,8 +285,8 @@ public class OnlineFragment extends Fragment {
 
 
         setAudioManager();
-        timerTextHelper = new TimerTextHelper();
-        timerTextHelper.run();
+        timerTextHelper = new TimerTextHelper(mTimerText);
+        timerTextHelper.start();
 
         return view;
     }
@@ -288,7 +295,7 @@ public class OnlineFragment extends Fragment {
     private void setAudioManager() {
 
 
-        AudioManager audioManager = (AudioManager) getContext().getSystemService(AUDIO_SERVICE);
+        AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
 
         float actualVolume = (float) audioManager
                 .getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -321,11 +328,11 @@ public class OnlineFragment extends Fragment {
         Log.e("Test Wizard question", "Points: " + pointScore);
 
 //        mMenu.findItem(R.id.rest_question).setTitle((currentQuestionId * 100) / questions.size() + "%  pts: " + pointScore);
-        mcqStatusInfo.setText((currentQuestionId * 100) / questions.size() + "%  pts: " + pointScore + "  time left: " + timerTextHelper.getTimeToLive());
-        if (currentQuestionId >= questions.size()  ) {
+        mcqStatusInfo.setText((currentQuestionId * 100) / questions.size() + "%  pts: " + pointScore);
+        if (timerTextHelper.getTimeToLive() < 0 || currentQuestionId >= questions.size()) {
             currentQuestionId = -1;
             mQuestionText.setVisibility(View.GONE);
-
+            mcqHeaderDetails.setVisibility(View.GONE);
             if (wizardUser != null) {
 
                 ArrayList<Questionaire> questionaires = wizardUser.getQuestionaires();
@@ -340,8 +347,15 @@ public class OnlineFragment extends Fragment {
 
 
                 } else {
-                    List<Questionaire> qFilterList = questionaires.stream().filter(questionaire -> questionaire.getUid().equals(mQuestionaire.getUid()))
-                            .collect(Collectors.toList());
+//                    List<Questionaire> qFilterList = questionaires.stream().filter(questionaire -> questionaire.getUid().equals(mQuestionaire.getUid()))
+//                            .collect(Collectors.toList());
+                    List<Questionaire> qFilterList = new ArrayList<>();
+                    for (int qs = 0; qs < questionaires.size(); qs++) {
+                        if (questionaires.get(qs).getUid().equals(mQuestionaire.getUid())) {
+                            qFilterList.add(questionaires.get(qs));
+                        }
+                    }
+
                     Log.e("Test Wizard question", "Questionaire x empty");
 
 
@@ -410,13 +424,31 @@ public class OnlineFragment extends Fragment {
             insertPointJsonFiles.setVisibility(View.VISIBLE);
             offlineQuestionView.setVisibility(View.GONE);
             Toast.makeText(getActivity(), "THIS WAS LAST QUESTION", Toast.LENGTH_LONG).show();
+
+
+//            int result = (pointScore) / questions.size();
+//
+//            if (result < 0) {
+//                result = 0;
+//            } else if (result > 3) {
+//                result = 3;
+//            }
+
+//            showCustomDialog(result);
+            ResultDialog.showCustomDialog(this);
+
         } else {
             Questionaire questionaireHash;
             final Question question = questions.get(currentQuestionId);
 
-            List<Questionaire> qFilterList = wizardUser.getQuestionaires().stream()
-                    .filter(questionaire -> questionaire.getUid().equals(mQuestionaire.getUid()))
-                    .collect(Collectors.toList());
+            List<Questionaire> qFilterListUnfilter = wizardUser.getQuestionaires();
+            List<Questionaire> qFilterList = new ArrayList<>();
+            for (int qs = 0; qs < qFilterListUnfilter.size(); qs++) {
+                if (qFilterListUnfilter.get(qs).getUid().equals(mQuestionaire.getUid())) {
+                    qFilterList.add(qFilterListUnfilter.get(qs));
+                }
+            }
+
             if (qFilterList != null && qFilterList.size() > 0) {
                 questionaireHash = qFilterList.get(0);
                 if (pointScore > questionaireHash.getScore()) {
@@ -427,10 +459,25 @@ public class OnlineFragment extends Fragment {
 
 
             question.setNumOfTimesAsked(question.getNumOfTimesAsked() + 1);
-            mQuestionText.setText(question.getQuestion_text());
+            String qt = question.getQuestion_text();
+            char ch = qt.substring(0, 1).charAt(0);
+            Log.e("Test char", ch + "");
+
+            while (Character.isDigit(ch)) {
+                qt = qt.substring(1);
+                ch = qt.substring(0, 1).charAt(0);
+
+            }
+            if (qt.startsWith(".") || qt.startsWith(")")) {
+                qt = qt.substring(1);
+            }
+
+            mQuestionText.setText(qt);
             String answers = "";
 
             insertPoint.removeAllViews();
+            Collections.shuffle(question.getAnswer_options());
+
             for (int aid = question.getAnswer_options().size() - 1; aid >= 0; aid--) {
                 answers += ("\n" + question.getAnswer_options().get(aid) + "\n");
                 LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -444,7 +491,7 @@ public class OnlineFragment extends Fragment {
                         getAnswer(questions, question.getAnswer_options().get(finalAid));
                     }
                 });
-                ans.setText(question.getAnswer_options().get(aid));
+                ans.setText(question.getAnswer_options().get(aid).substring(2));
                 insertPoint.addView(questionView, 0);
             }
 
@@ -461,9 +508,10 @@ public class OnlineFragment extends Fragment {
 
         mNextQuestion.setVisibility(View.VISIBLE);
         ArrayList<View> answerViews = insertPoint.getTouchables();
-        answerViews.forEach(a -> {
-            Button btn = (Button) a;
-            if (!btn.getText().equals(currentQuestion.getAnswer())) {
+        for (int av = 0; av < answerViews.size(); av++) {
+            Button btn = (Button) answerViews.get(av);
+
+            if (!btn.getText().equals(currentQuestion.getAnswer().substring(2))) {
                 btn.setText("");
             } else {
                 // Is the sound loaded already?
@@ -474,6 +522,7 @@ public class OnlineFragment extends Fragment {
                         soundPool.play(soundIdSuccess, volume * 2, volume * 2, 1, 0, 1f);
                         Log.e("Test sound", "Played sound success");
                         btn.setBackgroundColor(0xFFA4C639);
+                        timerTextHelper.bonusTime();
                     }
                 } else {
                     if (loaded) {
@@ -481,12 +530,13 @@ public class OnlineFragment extends Fragment {
                         soundPool.play(soundIdFailure, volume, volume, 1, 0, 1f);
                         Log.e("Test sound", "Played sound failure");
                         btn.setBackgroundColor(0xF0FFE666);
-
+                        timerTextHelper.deducTime();
                     }
                 }
             }
             btn.setOnClickListener(null);
-        });
+        }
+
 
         if (currentQuestion.getHint() != null) {
             mQuestionHint.setText(currentQuestion.getHint());
@@ -611,9 +661,83 @@ public class OnlineFragment extends Fragment {
         mQueue.add(request);
 
         timerTextHelper.resetTime();
+        mcqHeaderDetails.setVisibility(View.VISIBLE);
         return questions;
 
     }
 
+
+
+
+    public Activity getmActivity() {
+        return mActivity;
+    }
+
+    public View getView() {
+        return view;
+    }
+
+    public int getPointScore() {
+        return pointScore;
+    }
+
+    public ArrayList<Question> getQuestion_array() {
+        return question_array;
+    }
+
+
+
+    //    private void showCustomDialog(int msgIndex) {
+//        //before inflating the custom alert dialog layout, we will get the current mActivity viewgroup
+//        String[] results = {"Dude, you'll have to try harder", "Almost There, keep at it.", "A Real Wizard get more that 100%", "You are my Master ;)"};
+//        ViewGroup viewGroup = view.findViewById(android.R.id.content);
+//
+//
+//        //then we will inflate the custom alert dialog xml that we created
+//        View dialogView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.my_dialog, viewGroup, false);
+//
+//
+//        //Now we need an AlertDialog.Builder object
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//
+//        //setting the view of the builder to our custom view that we already inflated
+//        builder.setView(dialogView);
+//
+//
+//        //finally creating the alert dialog and displaying it
+//        AlertDialog alertDialog = builder.create();
+//
+//        dialogView.findViewById(R.id.btnGameOver).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                alertDialog.dismiss();
+////                startActivity(new Intent(NoConnectionActivity.this, StatusActivity.class));
+////                ((AppCompatActivity)NoConnectionActivity.this).finish();
+//
+//            }
+//        });
+//
+//        TextView gameOverTextMessage = ((TextView) dialogView.findViewById(R.id.gameOverTextMessage));
+//
+//        gameOverTextMessage.setText(results[msgIndex] + "\n    Score: " + pointScore);
+//        switch (msgIndex) {
+//            case 0:
+//                ((ImageView) dialogView.findViewById(R.id.gameResultIcon)).setImageResource(R.drawable.skull_dude_icon);
+//                break;
+//            case 1:
+//                ((ImageView) dialogView.findViewById(R.id.gameResultIcon)).setImageResource(R.drawable.stack_app_logout_icon);
+//                break;
+//            case 2:
+//                ((ImageView) dialogView.findViewById(R.id.gameResultIcon)).setImageResource(R.drawable.skull_pirate_icon);
+//                break;
+//            case 3:
+//                ((ImageView) dialogView.findViewById(R.id.gameResultIcon)).setImageResource(R.drawable.skull_wizard_icon);
+//                break;
+//        }
+//
+//        alertDialog.show();
+////
+//    }
+//
 
 }

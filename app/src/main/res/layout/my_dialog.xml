@@ -27,8 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Result: "
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+            android:textAlignment="center" />
 
         <TextView
             android:id="@+id/gameOverTextMessage"
@@ -36,8 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eu erat tincidunt lacus fermentum rutrum."
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textAlignment="center" />
 
         <Button
             android:id="@+id/btnGameOver"
@@ -45,6 +43,7 @@
             android:layout_height="81dp"
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
+            android:background="@drawable/skull_throne_icon"
             android:text=""
             android:textColor="@color/colorPrimary" />
 

@@ -104,8 +104,8 @@ public class OfflineFragment extends Fragment implements  View.OnClickListener{
         this.mView = inflater.inflate(R.layout.fragment_no_connection, container, false);
         offlineQuestionView = mView.findViewById(R.id.offline_question_view);
 
-        this.context = getContext();
         this.activity = getActivity();
+        this.context = this.activity.getApplicationContext();
 
 
 
@@ -290,7 +290,10 @@ public class OfflineFragment extends Fragment implements  View.OnClickListener{
                             List<Question> ques = question_array.subList(0, 20);
                             restQuestions = question_array.subList(20, question_array.size());
                             ArrayList<Question> tmp = new ArrayList<>();
-                            ques.stream().forEach(q -> tmp.add(q));
+                            for(Question q : ques){
+                                tmp.add(q);
+                            }
+//                            ques.stream().forEach(q -> tmp.add(q));
                             question_array = tmp;
                         } else {
                             limited = false;
@@ -370,7 +373,7 @@ public class OfflineFragment extends Fragment implements  View.OnClickListener{
 
 
         //Now we need an AlertDialog.Builder object
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         //setting the view of the builder to our custom view that we already inflated
         builder.setView(dialogView);
@@ -492,8 +495,8 @@ public class OfflineFragment extends Fragment implements  View.OnClickListener{
 
         mNextQuestion.setVisibility(View.VISIBLE);
         ArrayList<View> answerViews = insertPoint.getTouchables();
-        answerViews.forEach(a -> {
-            Button btn = (Button) a;
+        for(View va : answerViews){
+            Button btn = (Button) va;
             if (!btn.getText().equals(currentQuestion.getAnswer())) {
                 btn.setText("");
             } else {
@@ -517,7 +520,8 @@ public class OfflineFragment extends Fragment implements  View.OnClickListener{
                 }
             }
             btn.setOnClickListener(null);
-        });
+        }
+
 
         if (currentQuestion.getHint() != null) {
             mQuestionHint.setText(currentQuestion.getHint());
