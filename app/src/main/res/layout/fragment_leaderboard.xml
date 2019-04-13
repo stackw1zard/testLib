@@ -5,17 +5,30 @@
     android:orientation="vertical">
 
 
-    <Button
-        android:id="@+id/button"
+    <!--<Button-->
+    <!--android:id="@+id/button"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Button" />-->
+
+    <TextView
+        android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:text="Leader board"
+        android:textAllCaps="true"
+        android:textColor="@color/color600"
+        android:textSize="24dp"
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/simple_list_view"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:divider="@color/material_blue_grey_800"
         android:dividerHeight="1dp"
-        android:footerDividersEnabled="false" />
+        android:footerDividersEnabled="false"
+        android:padding="10dp" />
 </LinearLayout>

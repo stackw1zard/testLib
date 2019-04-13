@@ -1,40 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="100dp"
     android:gravity="center"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:layout_margin="15dp"
+    android:weightSum="7">
 
     <ImageView
         android:id="@+id/status_icon"
-        android:layout_width="48dp"
-        android:layout_height="46dp"
-        android:src="@drawable/left"
-        android:textAlignment="viewStart" />
+        android:layout_width="46dp"
+        android:layout_height="43dp"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:src="@drawable/left" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/status_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="category"
+            android:textColor="@color/color500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="userName"
+            android:textColor="@color/color500"
+            android:textStyle="italic" />
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/status_text_view"
-        android:layout_width="259dp"
-        android:layout_height="39dp"
-        android:layout_alignStart="@+id/status_icon"
-        android:layout_alignEnd="@+id/status_point_view"
-        android:layout_gravity="center"
-        android:layout_marginStart="53dp"
-        android:layout_marginEnd="98dp"
+        android:id="@+id/leaderScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:gravity="center"
-        android:padding="5dp"
-        android:text="category"
-        android:textColor="@color/color500" />
-
-    <TextView
-        android:id="@+id/status_point_view"
-        android:layout_width="95dp"
-        android:layout_height="54dp"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="center"
-        android:layout_marginEnd="2dp"
-        android:gravity="right"
-        android:padding="5dp"
         android:text="points"
-        android:textColor="@color/color500" />
-</RelativeLayout>
+        android:textColor="@color/color500"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+</LinearLayout>

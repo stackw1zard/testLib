@@ -299,6 +299,7 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
                                                                Map<String, String> boardLeader = new HashMap<>();
                                                                boardLeader.put("pointScore", pointScore + "");
                                                                boardLeader.put("UserId", mAuth.getUid());
+                                                               boardLeader.put("userName", wizardUser.getUsername());
 
                                                                dbRefLeaderBoard.setValue(boardLeader);
                                                            }
@@ -346,7 +347,7 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
                             if (questionImageIcon.getScore() < pointScore) {
                                 questionImageIcon.setScore(pointScore);
                                 Log.e("Test Wizard question", "Questionaire setting score: " + pointScore);
-                                pointScore = 0;
+//                                pointScore = 0;
 
                             }
                         }
@@ -366,7 +367,7 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
             Toast.makeText(getActivity(), "THIS WAS LAST QUESTION", Toast.LENGTH_LONG).show();
 
             ResultDialog.showCustomDialog(this);
-            pointScore = 0;
+//            pointScore = 0;
 
         } else {
             Questionaire questionaireHash;
@@ -582,6 +583,7 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
 
         timerTextHelper.resetTime();
         mcqHeaderDetails.setVisibility(View.VISIBLE);
+        pointScore = 0;
         return questions;
 
     }

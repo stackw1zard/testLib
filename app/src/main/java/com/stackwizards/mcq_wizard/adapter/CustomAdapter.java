@@ -16,14 +16,14 @@ import java.util.Map;
 
 public class CustomAdapter extends BaseAdapter {
     Context context;
-    String countryList[];
-    int flags[];
+    //    String countryList[];
+//    int flags[];
     LayoutInflater inflter;
 
-    String categories[];
-    Integer[] points;
-    WizardUser wizardUser;
-
+    //    String categories[];
+//    Integer[] points;
+    ArrayList<ViewAdapterLeaderBoard> viewAdapterLeaderBoardArrayList;
+    ArrayList<String> lNames;
 //    public CustomAdapter(Context applicationContext, String[] countryList) {
 //        this.context = context;
 //        this.countryList = countryList;
@@ -32,18 +32,24 @@ public class CustomAdapter extends BaseAdapter {
 //    }
 
 
-    public CustomAdapter(Context context, WizardUser wizardUser) {
+    public CustomAdapter(Context context,  ArrayList<ViewAdapterLeaderBoard> viewAdapterLeaderBoardArrayList) {
         this.context = context;
-        this.wizardUser = wizardUser;
-        ArrayList<String> categoryiesArray = new ArrayList<>();
-        ArrayList<Integer> pointsArray = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : wizardUser.getNotes().entrySet()) {
-            categoryiesArray.add(entry.getKey());
-            pointsArray.add(entry.getValue());
-            // ...
-        }
-        categories = categoryiesArray.toArray(new String[categoryiesArray.size()]);
-        points = pointsArray.toArray(new Integer[pointsArray.size()]);
+        this.viewAdapterLeaderBoardArrayList = viewAdapterLeaderBoardArrayList;
+        this.lNames = new ArrayList<>();
+//        this.wizardUser = wizardUser;
+
+//        for (Map.Entry<String, Integer> entry : wizardUser.getNotes().entrySet()) {
+//            categoryiesArray.add(entry.getKey());
+//            pointsArray.add(entry.getValue());
+//            // ...
+//        }
+//        categories = categoryiesArray.toArray(new String[categoryiesArray.size()]);
+//        points = pointsArray.toArray(new Integer[pointsArray.size()]);
+//        for (Map.Entry me : mcqLeader.entrySet()) {
+//            System.out.println("Key: "+me.getKey() + " & Value: " + me.getValue());
+//            lNames.add(me.getKey().toString());
+//
+//        }
         inflter = (LayoutInflater.from(context));
 
 
@@ -52,7 +58,7 @@ public class CustomAdapter extends BaseAdapter {
     @Override
     public int getCount() {
 //        return categories.length;
-        return 3;
+        return viewAdapterLeaderBoardArrayList.size();
 
     }
 
@@ -69,15 +75,19 @@ public class CustomAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         view = inflter.inflate(R.layout.listview_adapter_leaderboard, null);
-        TextView country = (TextView) view.findViewById(R.id.status_text_view);
+        TextView leader = (TextView) view.findViewById(R.id.status_text_view);
+        TextView pts = (TextView) view.findViewById(R.id.leaderScore);
+        TextView name = (TextView) view.findViewById(R.id.userName);
         ImageView icon = (ImageView) view.findViewById(R.id.status_icon);
 
-//        country.setText("xx");
+        leader.setText(viewAdapterLeaderBoardArrayList.get(i).getMcqName());
+        pts.setText(viewAdapterLeaderBoardArrayList.get(i).getScore());
+        name.setText(viewAdapterLeaderBoardArrayList.get(i).getUserName());
 //        String category = categories[i].replace("_icon","");
 //        country.setText(category );
 //        TextView pts = (TextView) view.findViewById(R.id.status_point_view);
 //        pts.setText(points[i].toString());
-//        icon.setImageResource(R.drawable.microcontroller);
+        icon.setImageBitmap(viewAdapterLeaderBoardArrayList.get(i).getUserPic());
 
 
         return view;
