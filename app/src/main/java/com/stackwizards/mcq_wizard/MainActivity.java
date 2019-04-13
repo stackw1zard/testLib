@@ -36,6 +36,7 @@ import com.google.firebase.storage.StorageReference;
 import com.stackwizards.mcq_wizard.entity.WizardUser;
 import com.stackwizards.mcq_wizard.fragment.DownloadFragment;
 import com.stackwizards.mcq_wizard.fragment.HelpInfoFragment;
+import com.stackwizards.mcq_wizard.fragment.LeaderBoardFragment;
 import com.stackwizards.mcq_wizard.fragment.OfflineFragment;
 import com.stackwizards.mcq_wizard.fragment.OnlineFragment;
 
@@ -66,17 +67,6 @@ public class MainActivity extends AppCompatActivity
 
 
         mQueue = Volley.newRequestQueue(this);
-
-
-
-
-
-
-
-
-
-
-
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -112,8 +102,8 @@ public class MainActivity extends AppCompatActivity
 //                                        imageView.setMinimumWidth(dm.widthPixels);
                                         imageView.setImageBitmap(bm);
 
-                                        ((TextView)findViewById(R.id.userName)).setText(wizardUser.getUsername());
-                                        ((TextView)findViewById(R.id.userEmail)).setText( mAuth.getCurrentUser().getEmail());
+                                        ((TextView) findViewById(R.id.userName)).setText(wizardUser.getUsername());
+                                        ((TextView) findViewById(R.id.userEmail)).setText(mAuth.getCurrentUser().getEmail());
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -183,17 +173,15 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_online) {
-            // Handle the camera action
             loadFragment(new OnlineFragment());
-
         } else if (id == R.id.nav_offline) {
             loadFragment(new OfflineFragment());
-
         } else if (id == R.id.nav_download) {
             loadFragment(new DownloadFragment());
-
         } else if (id == R.id.nav_manual) {
             loadFragment(new HelpInfoFragment());
+        } else if (id == R.id.nav_leader_board) {
+            loadFragment(new LeaderBoardFragment());
         } else if (id == R.id.nav_profile) {
             startActivity(new Intent(this, ProfileActivity.class));
         } else if (id == R.id.nav_add_mcq) {
@@ -211,7 +199,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     private void loadFragment(Fragment fragment) {
 // create a FragmentManager
         FragmentManager fm = getFragmentManager();
@@ -221,8 +208,6 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit(); // save the changes
     }
-
-
 
 
     private static boolean isExternalStorageReadOnly() {
@@ -241,10 +226,6 @@ public class MainActivity extends AppCompatActivity
         }
         return false;
     }
-
-
-
-
 
 
     private void userDataIsNull(DatabaseReference dbRefDefault) {

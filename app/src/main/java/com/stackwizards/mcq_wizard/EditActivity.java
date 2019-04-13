@@ -94,37 +94,7 @@ public class EditActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 wizardUser = dataSnapshot.getValue(WizardUser.class);
                 if (wizardUser == null) {
-//                    Toast.makeText(ProfileActivity.this, "zzz" + mAuth. , Toast.LENGTH_LONG).show();
-
                     userDataIsNull(dbRef);
-                } else {
-//                    editText.setText(wizardUser.getUsername());
-//                    EditActivity.this.setTitle(wizardUser.getUsername());
-//                    StorageReference mImageRef = FirebaseStorage.getInstance().getReference("profilepics/" + mAuth.getCurrentUser().getUid() + "/profile.jpg");
-//
-//                    if (mImageRef != null) {
-//                        final long ONE_MEGABYTE = 1024 * 1024;
-//                        mImageRef.getBytes(ONE_MEGABYTE)
-//                                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-//                                    @Override
-//                                    public void onSuccess(byte[] bytes) {
-//                                        Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//                                        DisplayMetrics dm = new DisplayMetrics();
-//                                        getWindowManager().getDefaultDisplay().getMetrics(dm);
-//
-//                                        imageView.setMinimumHeight(dm.heightPixels);
-//                                        imageView.setMinimumWidth(dm.widthPixels);
-//                                        imageView.setImageBitmap(bm);
-//                                    }
-//                                }).addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception exception) {
-//                                // Handle any errors
-//                            }
-//                        });
-//
-//                    }
-
                 }
             }
 

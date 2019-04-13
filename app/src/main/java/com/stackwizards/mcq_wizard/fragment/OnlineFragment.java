@@ -49,7 +49,9 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.content.Context.AUDIO_SERVICE;
 
@@ -101,18 +103,8 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-// Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_online, container, false);
-// get the reference of Button
-//        firstButton = (Button) view.findViewById(R.id.firstButton);
-// perform setOnClickListener on first Button
-//        firstButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//// display a message by using a Toast
-//                Toast.makeText(getActivity(), "Fragment's Button", Toast.LENGTH_LONG).show();
-//            }
-//        });
+
         this.mActivity = getActivity();
         context = mActivity.getApplicationContext();
 
@@ -124,9 +116,6 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
 
 
         FirebaseApp.initializeApp(getActivity());
-//        FireBaseQuestionaires.this.setTitle("");
-
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         mQueue = Volley.newRequestQueue(context);
 
@@ -156,27 +145,12 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String text = "";
-                //            str += (file[i].getName() + "\n");
-                LayoutInflater inflater = getActivity().getLayoutInflater();
 
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     View mcqView = inflater.inflate(R.layout.mcq_view_adpater, null);
                     //Here you can access the child.getKey()
                     Questionaire questionaire = child.getValue(Questionaire.class);
                     text += (questionaire.getIconName() + " \n ");
-
-//                    TextView mcqText = ((TextView) mcqView.findViewById(R.id.mcqTextView));
-//                    mcqText.setText(questionaire.getIconName());
-//                    String ic = (String) dbRef.child(child.getKey()).child("iconName").toString();
-//                   Questionaire hallo =  (Questionaire) dbRef.child(child.getKey()).getClass();
-//                    mcqText.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            ArrayList<Question> qs = jsonParse(questionaire.getJsonUrl(),questions);
-//                            Toast.makeText(FireBaseQuestionaires.this, " GOING TO FETCH: " + questionaire.getJsonUrl() + "  " + qs.size() , Toast.LENGTH_LONG).show();
-//
-//                        }
-//                    });
 
                     Log.e("TestQ", "QuestionaireId: " + child.getKey());
 
@@ -189,8 +163,6 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
                                     @Override
                                     public void onSuccess(byte[] bytes) {
                                         Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//                                        DisplayMetrics dm = new DisplayMetrics();
-//                                        getWindowManager().getDefaultDisplay().getMetrics(dm);
 
                                         ImageView mcqImage = ((ImageView) mcqView.findViewById(R.id.mcqImageView));
                                         mcqImage.setImageBitmap(bm);
@@ -209,9 +181,8 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
                                                 ((ImageView) view.findViewById(R.id.btn_next)).setVisibility(View.VISIBLE);
                                             }
                                         });
-//                                        imageView.setMinimumHeight(dm.heightPixels);
-//                                        imageView.setMinimumWidth(dm.widthPixels);
-//                                        imageView.setImageBitmap(bm);
+
+                                        mcqView.setVisibility(View.VISIBLE);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -255,13 +226,6 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
                     dbRefWizard.setValue(wizardUser);
                 }
 
-//                String bio = (String) dataSnapshot.child("bio").getValue().toString();
-//                wizardUser.setBio("xxx " + bio);
-//                        String user = (String) dataSnapshot.child("username").getValue().toString();
-//                wizardUser.setUsername("xxx " + user);
-
-//                        Toast.makeText(ProfileActivity.this,bio, Toast.LENGTH_SHORT).show();
-
             }
 
 
@@ -270,19 +234,6 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
-
-//        dbRef = FirebaseDatabase.getInstance().getReference().child("Members");
-
-//        findViewById(R.id.btnTestQuestion).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String allQs = "";
-//                for (int i = 0; i < question_array.size(); i++) {
-//                    allQs += question_array.get(i).getQuestion_text();
-//                }
-//                ((TextView) findViewById(R.id.fire_questionaires)).setText(allQs);
-//            }
-//        });
 
 
         setAudioManager();
@@ -334,6 +285,31 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
             currentQuestionId = -1;
             mQuestionText.setVisibility(View.GONE);
             mcqHeaderDetails.setVisibility(View.GONE);
+
+
+
+            DatabaseReference dbRefLeaderBoard = FirebaseDatabase.getInstance().getReference().child("LeaderBoard").child(mQuestionaire.getIconName().replace(".png",""));
+
+            dbRefLeaderBoard.addValueEventListener(new ValueEventListener() {
+                                                       @Override
+                                                       public void onDataChange(DataSnapshot dataSnapshot) {
+                                                           String pts = dataSnapshot.child("pointScore").getValue(String.class);
+                                                           if(pts == null ||pointScore > Integer.parseInt(pts)) {
+//                                                               Toast.makeText(getActivity(), "THISXXXXX:" + pts, Toast.LENGTH_LONG).show();
+                                                               Map<String, String> boardLeader = new HashMap<>();
+                                                               boardLeader.put("pointScore", pointScore + "");
+                                                               boardLeader.put("UserId", mAuth.getUid());
+
+                                                               dbRefLeaderBoard.setValue(boardLeader);
+                                                           }
+                                                       }
+
+                                                       @Override
+                                                       public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                       }
+                                                   });
+
             if (wizardUser != null) {
 
                 ArrayList<Questionaire> questionaires = wizardUser.getQuestionaires();
@@ -380,63 +356,17 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
                     wizardUser.setQuestionaires(questionaires);
                 }
 
-//                questionairePointer =  questionaires.stream().
-//                        filter(questionaire -> questionaire.getUid().equals(mQuestionaire.getUid()))
-//                        .collect(Collectors.toList());
-//
-//
-//                    questionaires.add(mQuestionaire);
-
-
             }
 
 
             insertPoint.setVisibility(View.GONE);
-//            int result = (pointScore) / questions.size();
-//
-//            if (result < 0) {
-//                result = 0;
-//            } else if (result > 3) {
-//                result = 3;
-//            }
-//
-//            showCustomDialog(result);
-//
-//            Gson gson = new Gson();
-//
-//            if (limited) {
-//                question_array.addAll(restQuestions);
-//            }
-//
-//            Collections.sort(question_array,
-//                    (m1, m2) -> (int) (m2.getNumOfTimesAsked() - m1.getNumOfTimesAsked()));
-//            String jsonData = gson.toJson(question_array);
-//
-//            try {
-//                myExternalFile = new File(getExternalFilesDir(filepath), selectedJsonFile);
-//                FileOutputStream fos = new FileOutputStream(myExternalFile);
-//                fos.write(jsonData.getBytes());
-//                fos.close();
-//            } catch (IOException e) {
-//                Log.d("JSON PARSE DATA WRITTEN", e.getMessage());
-//            }
-//
-//
+
             insertPointJsonFiles.setVisibility(View.VISIBLE);
             offlineQuestionView.setVisibility(View.GONE);
             Toast.makeText(getActivity(), "THIS WAS LAST QUESTION", Toast.LENGTH_LONG).show();
 
-
-//            int result = (pointScore) / questions.size();
-//
-//            if (result < 0) {
-//                result = 0;
-//            } else if (result > 3) {
-//                result = 3;
-//            }
-
-//            showCustomDialog(result);
             ResultDialog.showCustomDialog(this);
+            pointScore = 0;
 
         } else {
             Questionaire questionaireHash;
@@ -552,17 +482,6 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
 //        insertPoint.setVisibility(View.GONE);
         ArrayList<Question> questions = new ArrayList<>();
 
-//        soundPool.play(soundIdStart, volume*3, volume*3, 1, 0, 1f);
-
-
-//        timerTextHelper.resetTime();
-//        mQuestionAnswer.setText("");
-//        questions.clear();
-//        questionPointerNum = 0;
-//        pointScore = 0;
-//        mMenu.findItem(R.id.timer_text).setVisible(false);
-//        mMenu.findItem(R.id.rest_question).setVisible(false);
-
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -668,8 +587,6 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
     }
 
 
-
-
     public Activity getmActivity() {
         return mActivity;
     }
@@ -687,58 +604,5 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
     }
 
 
-
-    //    private void showCustomDialog(int msgIndex) {
-//        //before inflating the custom alert dialog layout, we will get the current mActivity viewgroup
-//        String[] results = {"Dude, you'll have to try harder", "Almost There, keep at it.", "A Real Wizard get more that 100%", "You are my Master ;)"};
-//        ViewGroup viewGroup = view.findViewById(android.R.id.content);
-//
-//
-//        //then we will inflate the custom alert dialog xml that we created
-//        View dialogView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.my_dialog, viewGroup, false);
-//
-//
-//        //Now we need an AlertDialog.Builder object
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//
-//        //setting the view of the builder to our custom view that we already inflated
-//        builder.setView(dialogView);
-//
-//
-//        //finally creating the alert dialog and displaying it
-//        AlertDialog alertDialog = builder.create();
-//
-//        dialogView.findViewById(R.id.btnGameOver).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                alertDialog.dismiss();
-////                startActivity(new Intent(NoConnectionActivity.this, StatusActivity.class));
-////                ((AppCompatActivity)NoConnectionActivity.this).finish();
-//
-//            }
-//        });
-//
-//        TextView gameOverTextMessage = ((TextView) dialogView.findViewById(R.id.gameOverTextMessage));
-//
-//        gameOverTextMessage.setText(results[msgIndex] + "\n    Score: " + pointScore);
-//        switch (msgIndex) {
-//            case 0:
-//                ((ImageView) dialogView.findViewById(R.id.gameResultIcon)).setImageResource(R.drawable.skull_dude_icon);
-//                break;
-//            case 1:
-//                ((ImageView) dialogView.findViewById(R.id.gameResultIcon)).setImageResource(R.drawable.stack_app_logout_icon);
-//                break;
-//            case 2:
-//                ((ImageView) dialogView.findViewById(R.id.gameResultIcon)).setImageResource(R.drawable.skull_pirate_icon);
-//                break;
-//            case 3:
-//                ((ImageView) dialogView.findViewById(R.id.gameResultIcon)).setImageResource(R.drawable.skull_wizard_icon);
-//                break;
-//        }
-//
-//        alertDialog.show();
-////
-//    }
-//
 
 }

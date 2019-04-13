@@ -95,6 +95,7 @@ public class DownloadFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         insertPointJsonFiles = view.findViewById(R.id.insert_point_json_files);
+
         dbRef = FirebaseDatabase.getInstance().getReference().child("Questionaires");
         dbRef.addValueEventListener(new ValueEventListener() {
 
@@ -102,14 +103,14 @@ public class DownloadFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String text = "";
-                LayoutInflater inflater = getActivity().getLayoutInflater();
+//                LayoutInflater inflater = getActivity().getLayoutInflater();
 
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    View mcqView = inflater.inflate(R.layout.mcq_view_adpater, null);
                     //Here you can access the child.getKey()
                     Questionaire questionaire = child.getValue(Questionaire.class);
                     text += (questionaire.getIconName() + " \n ");
 
+                    View mcqView = inflater.inflate(R.layout.mcq_view_adpater, null);
 
                     Log.e("TestQ", "QuestionaireId: " + child.getKey());
 
@@ -142,6 +143,8 @@ public class DownloadFragment extends Fragment {
                                                 mcqView.setVisibility(View.GONE);
                                             }
                                         });
+
+                                        mcqView.setVisibility(View.VISIBLE);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
