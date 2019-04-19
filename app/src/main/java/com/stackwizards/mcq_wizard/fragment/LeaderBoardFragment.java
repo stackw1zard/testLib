@@ -80,11 +80,57 @@ public class LeaderBoardFragment extends Fragment {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             String pts = dataSnapshot.child("pointScore").getValue(String.class);
-                            String name = dataSnapshot.child("userName").getValue(String.class);
-                            viewAdapterLeaderBoard.setScore(pts);
-                            viewAdapterLeaderBoard.setUserName(name);
 
                             String uuid = dataSnapshot.child("UserId").getValue(String.class);
+
+                            DatabaseReference dbReflocal = FirebaseDatabase.getInstance().getReference().child("Members").child(uuid);
+
+
+//        dbRef = FirebaseDatabase.getInstance().getReference().child("Members");
+                            dbReflocal.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
+                                    wizardUser = dataSnapshot2.getValue(WizardUser.class);
+                                    if (wizardUser != null) {
+
+                                        String name = wizardUser.getUsername();
+
+                                        viewAdapterLeaderBoard.setUserName(name);
+                                    }
+////                    Toast.makeText(ProfileActivity.this, "zzz" + mAuth. , Toast.LENGTH_LONG).show();
+//
+//                                        userDataIsNull(dbRef);
+//                                    } else {
+////                    editText.setText(wizardUser.getUsername());
+////                    ProfileActivity.this.setTitle(wizardUser.getUsername());
+//                                        loadUserDrawer();
+//
+//                                        ((TextView) findViewById(R.id.userName)).setText(wizardUser.getUsername());
+//                                        ((TextView) findViewById(R.id.userEmail)).setText(mAuth.getCurrentUser().getEmail());
+//                                    }
+//                String bio = (String) dataSnapshot.child("bio").getValue().toString();
+//                wizardUser.setBio("xxx " + bio);
+//                        String user = (String) dataSnapshot.child("username").getValue().toString();
+//                wizardUser.setUsername("xxx " + user);
+
+//                        Toast.makeText(ProfileActivity.this,bio, Toast.LENGTH_SHORT).show();
+
+                                }
+
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    System.out.println("The read failed: " + databaseError.getCode());
+                                }
+                            });
+
+
+
+
+
+
+                            viewAdapterLeaderBoard.setScore(pts);
+
 
 
                             StorageReference mImageRef = FirebaseStorage.getInstance().getReference("profilepics/" + uuid + "/profile.jpg");
@@ -106,6 +152,13 @@ public class LeaderBoardFragment extends Fragment {
                                     @Override
                                     public void onFailure(@NonNull Exception exception) {
                                         // Handle any errors
+                                        Bitmap bm = BitmapFactory.decodeResource(context.getResources(),
+                                                R.drawable.android_plain_wordmark);
+                                        viewAdapterLeaderBoard.setUserPic(bm);
+                                        viewAdapterLeaderBoardArrayList.add(viewAdapterLeaderBoard);
+
+                                        CustomAdapter customAdapter = new CustomAdapter(context, viewAdapterLeaderBoardArrayList);
+                                        simpleList.setAdapter(customAdapter);
                                     }
                                 });
 

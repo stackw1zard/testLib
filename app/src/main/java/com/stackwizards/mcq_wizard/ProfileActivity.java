@@ -318,7 +318,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void userDataIsNull(DatabaseReference dbRefDefault) {
         WizardUser wizz = new WizardUser();
-        wizz.setUsername("wizardName");
+        FirebaseUser muser = mAuth.getCurrentUser();
+         String name = muser.getEmail().split("@")[0];
+
+        wizz.setUsername(name);
 //        wizz.setEmail("bla@b.com");
         wizz.setBio("Not much to say");
 //        wizz.setAge(23);

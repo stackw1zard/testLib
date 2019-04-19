@@ -27,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.stackwizards.mcq_wizard.entity.WizardUser;
 import com.stackwizards.mcq_wizard.fragment.DownloadFragment;
 import com.stackwizards.mcq_wizard.fragment.HelpInfoFragment;
@@ -41,11 +43,14 @@ import com.stackwizards.mcq_wizard.fragment.LeaderBoardFragment;
 import com.stackwizards.mcq_wizard.fragment.OfflineFragment;
 import com.stackwizards.mcq_wizard.fragment.OnlineFragment;
 
+import java.io.ByteArrayOutputStream;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     FirebaseAuth mAuth;
+    TextView userName;
 
     DatabaseReference dbRef;
     WizardUser wizardUser;
@@ -57,7 +62,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 //        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -88,33 +92,7 @@ public class MainActivity extends AppCompatActivity
                 } else {
 //                    editText.setText(wizardUser.getUsername());
 //                    ProfileActivity.this.setTitle(wizardUser.getUsername());
-                    StorageReference mImageRef = FirebaseStorage.getInstance().getReference("profilepics/" + mAuth.getCurrentUser().getUid() + "/profile.jpg");
-
-                    if (mImageRef != null) {
-                        final long ONE_MEGABYTE = 1024 * 1024;
-                        mImageRef.getBytes(ONE_MEGABYTE)
-                                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                    @Override
-                                    public void onSuccess(byte[] bytes) {
-                                        Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                        DisplayMetrics dm = new DisplayMetrics();
-                                        getWindowManager().getDefaultDisplay().getMetrics(dm);
-                                        ImageView imageView = findViewById(R.id.profileImageView);
-//                                        imageView.setMinimumHeight(dm.heightPixels);
-//                                        imageView.setMinimumWidth(dm.widthPixels);
-                                        imageView.setImageBitmap(bm);
-
-                                        ((TextView) findViewById(R.id.userName)).setText(wizardUser.getUsername());
-                                        ((TextView) findViewById(R.id.userEmail)).setText(mAuth.getCurrentUser().getEmail());
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                // Handle any errors
-                            }
-                        });
-
-                    }
+                    loadUserDrawer();
 
                 }
 //                String bio = (String) dataSnapshot.child("bio").getValue().toString();
@@ -133,8 +111,56 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        loadFragment(new HelpInfoFragment());
 
     }
+
+    private void loadUserDrawer() {
+        StorageReference mImageRef = FirebaseStorage.getInstance().getReference("profilepics/" + mAuth.getCurrentUser().getUid() + "/profile.jpg");
+
+        if (mImageRef != null) {
+            final long ONE_MEGABYTE = 1024 * 1024;
+            mImageRef.getBytes(ONE_MEGABYTE)
+                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            DisplayMetrics dm = new DisplayMetrics();
+                            getWindowManager().getDefaultDisplay().getMetrics(dm);
+                            ImageView imageView = findViewById(R.id.profileImageView);
+//                                        imageView.setMinimumHeight(dm.heightPixels);
+//                                        imageView.setMinimumWidth(dm.widthPixels);
+                            imageView.setImageBitmap(bm);
+
+
+
+                            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                            userName = ((TextView) drawer.findViewById(R.id.userName));
+                            if (userName != null && wizardUser != null && wizardUser.getUsername() != null) userName.setText(wizardUser.getUsername());
+//                    userName.setText("wizardUser.getUsername()");
+                            TextView tvemail = ((TextView) findViewById(R.id.userEmail));
+                            if (tvemail != null) tvemail.setText(mAuth.getCurrentUser().getEmail());
+
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+
+
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadUserDrawer();
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -232,7 +258,10 @@ public class MainActivity extends AppCompatActivity
 
     private void userDataIsNull(DatabaseReference dbRefDefault) {
         WizardUser wizz = new WizardUser();
-        wizz.setUsername("wizardName");
+        FirebaseUser muser = mAuth.getCurrentUser();
+        String name = muser.getEmail().split("@")[0];
+
+        wizz.setUsername(name);
 //        wizz.setEmail("bla@b.com");
         wizz.setBio("Not much to say");
 //        wizz.setAge(23);
@@ -245,5 +274,45 @@ public class MainActivity extends AppCompatActivity
         dbRefDefault.setValue(wizz);
 
 
+        ((TextView) findViewById(R.id.userName)).setText(wizz.getUsername());
+        ((TextView) findViewById(R.id.userEmail)).setText(mAuth.getCurrentUser().getEmail());
+
+        Bitmap bm = BitmapFactory.decodeResource(this.getResources(),
+                R.drawable.android_plain_wordmark);
+        uploadBitmapFirebase(bm);
+        ((ImageView) findViewById(R.id.profileImageView)).setImageBitmap(bm);
+
     }
+
+    private void uploadBitmapFirebase(Bitmap bitmap){
+
+        if (bitmap != null) {
+//            progressBar.setVisibility(View.VISIBLE);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            final StorageReference profileImageRef =
+                    FirebaseStorage.getInstance().getReference("profilepics/" + mAuth.getCurrentUser().getUid() + "/profile.jpg");
+
+            UploadTask uploadTask = profileImageRef.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+//                    progressBar.setVisibility(View.GONE);
+//                    profileImageUrl = profileImageRef.getDownloadUrl().toString();
+
+                }
+            });
+
+        }
+    }
+
 }
