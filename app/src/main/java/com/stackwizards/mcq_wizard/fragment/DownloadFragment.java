@@ -132,15 +132,20 @@ public class DownloadFragment extends Fragment {
                                             mcqImage.setBackgroundColor(0xFFA4C639);
                                         }
 
+                                        String finalTmpFileName = tmpFileName;
                                         mcqImage.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                if (questionaire.getUid() == null) {
-                                                    questionaire.setUid(child.getKey());
+                                                if(filenames.contains(finalTmpFileName)) {
+                                                    Toast.makeText(context, "FILE ALREADY EXIST IN FOLDER" , Toast.LENGTH_LONG).show();
+                                                }else {
+                                                    if (questionaire.getUid() == null) {
+                                                        questionaire.setUid(child.getKey());
+                                                    }
+                                                    mQuestionaire = questionaire;
+                                                    saveMcqResourcesInFile(questionaire.getJsonUrl());
+                                                    mcqView.setVisibility(View.GONE);
                                                 }
-                                                mQuestionaire = questionaire;
-                                                saveMcqResourcesInFile(questionaire.getJsonUrl());
-                                                mcqView.setVisibility(View.GONE);
                                             }
                                         });
 
@@ -183,7 +188,7 @@ public class DownloadFragment extends Fragment {
                             FileOutputStream fos = new FileOutputStream(myExternalFile);
                             fos.write(response.toString().getBytes());
                             fos.close();
-                            Toast.makeText(context, " GOING TO FETCH: " + url + " XX " , Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "DOWNLOAD WAS SUCCESSFUL" , Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
 
                         } catch (IOException e) {
