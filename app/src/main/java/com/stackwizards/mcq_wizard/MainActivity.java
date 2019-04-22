@@ -4,6 +4,12 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -125,11 +131,13 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onSuccess(byte[] bytes) {
                             Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            DisplayMetrics dm = new DisplayMetrics();
-                            getWindowManager().getDefaultDisplay().getMetrics(dm);
+//                            DisplayMetrics dm = new DisplayMetrics();
+//                            getWindowManager().getDefaultDisplay().getMetrics(dm);
                             ImageView imageView = findViewById(R.id.profileImageView);
 //                                        imageView.setMinimumHeight(dm.heightPixels);
 //                                        imageView.setMinimumWidth(dm.widthPixels);
+                            bm = getRoundedCornerBitmap(bm, 10);
+
                             imageView.setImageBitmap(bm);
 
 
@@ -159,6 +167,7 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         loadUserDrawer();
+        ( (DrawerLayout) findViewById(R.id.drawer_layout)).openDrawer(GravityCompat.START);
     }
 
 
@@ -280,8 +289,32 @@ public class MainActivity extends AppCompatActivity
         Bitmap bm = BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.android_plain_wordmark);
         uploadBitmapFirebase(bm);
+        bm = getRoundedCornerBitmap(bm, 10);
         ((ImageView) findViewById(R.id.profileImageView)).setImageBitmap(bm);
 
+    }
+
+
+    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap
+                .getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+        final float roundPx = pixels;
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return output;
     }
 
     private void uploadBitmapFirebase(Bitmap bitmap){

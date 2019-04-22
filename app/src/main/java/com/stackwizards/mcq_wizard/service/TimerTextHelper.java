@@ -60,6 +60,6 @@ public class TimerTextHelper implements Runnable {
         this.timeToLive = this.timeToLive - 5;
     }
     public void resetTime(){
-        this.timeToLive = 20;
+        this.timeToLive = 60;
     }
 }

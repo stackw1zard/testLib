@@ -7,19 +7,19 @@
         <item
             android:id="@+id/nav_online"
             android:icon="@drawable/operating_system"
-            android:title="Online MCQs" />
+            android:title="Tournament" />
         <item
             android:id="@+id/nav_offline"
             android:icon="@drawable/oflline_icon"
-            android:title="Offline MCQs" />
+            android:title="Training" />
         <item
             android:id="@+id/nav_download"
             android:icon="@drawable/status_icon"
-            android:title="Download" />
+            android:title="Market" />
         <item
             android:id="@+id/nav_manual"
             android:icon="@drawable/stack_wizard_user_manual"
-            android:title="Help" />
+            android:title="Tome" />
     </group>
 
     <item android:title="">
@@ -27,7 +27,7 @@
             <item
                 android:id="@+id/nav_profile"
                 android:icon="@drawable/stack_wizard_user"
-                android:title="Profile" />
+                android:title="Who Am I" />
             <item
                 android:id="@+id/nav_add_mcq"
                 android:icon="@drawable/stack_app_menu_edit"
@@ -35,7 +35,7 @@
             <item
                 android:id="@+id/nav_leader_board"
                 android:icon="@drawable/leader_board"
-                android:title="Leader Board" />
+                android:title="Hall of Fame" />
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/stack_app_logout_icon"
