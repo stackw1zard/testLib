@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_margin="10dp"
-        android:src="@drawable/status_icon" />
+        android:src="@drawable/stack_wizard_user_manual" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:text="* You can download multiple choice questions for offline use. In Training modus, a round consists of only 20 questions. Corretly answered questions are sorted to the back for a more effective learning\n"
+            android:text="* You can download multiplechoice questions for offline training use. In Training modus, a round consists of only 20 questions. Corretly answered questions are sorted to the back for a more effective learning\n"
             android:textColor="#344534"
             android:textSize="15dp" />
 
@@ -45,7 +45,16 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="* You can download multiple choice questions for offline use. Corretly answered questions are sorted to the back for a more effective learning.\n"
+            android:text="* You can also add you own questions to the app. Put you json formatted questions in the android/data/stackwizards_mcw/file/mystorage/ folder and access these in the Training modus\n"
+            android:textColor="#344534"
+            android:textSize="15dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="* If you want to share your custom questionaires with others, just send me an email at stackwizards@gmail\n"
             android:textColor="#344534"
             android:textSize="15dp" />
 

@@ -77,7 +77,7 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
 
     private ArrayList<Question> question_array;
     private List<Question> restQuestions;
-    private int questionPointerNum = 0;
+    public int questionPointerNum = 0;
 
     boolean loaded = false;
     private float volume = 0;
@@ -96,8 +96,6 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
     TimerTextHelper timerTextHelper;
 
     private Questionaire mQuestionaire = null;
-
-
 
 
     @Override
@@ -133,7 +131,7 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
         mNextQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                questionPointerNum = nextQuestion(question_array, questionPointerNum);
+                questionPointerNum = nextQuestion();
             }
         });
 
@@ -237,8 +235,7 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
 
 
         setAudioManager();
-        timerTextHelper = new TimerTextHelper(mTimerText);
-        timerTextHelper.start();
+        timerTextHelper = new TimerTextHelper(this, mTimerText);
 
         return view;
     }
@@ -273,43 +270,47 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
     }
 
 
-    private int nextQuestion(final ArrayList<Question> questions, int currentQuestionId) {
+    public int nextQuestion() {
+//        final ArrayList<Question> questions =
+
         mNextQuestion.setVisibility(View.GONE);
         mQuestionHint.setVisibility(View.GONE);
         mQuestionText.setVisibility(View.VISIBLE);
         Log.e("Test Wizard question", "Points: " + pointScore);
 
 //        mMenu.findItem(R.id.rest_question).setTitle((currentQuestionId * 100) / questions.size() + "%  pts: " + pointScore);
-        mcqStatusInfo.setText((currentQuestionId * 100) / questions.size() + "%  pts: " + pointScore);
-        if (timerTextHelper.getTimeToLive() < 0 || currentQuestionId >= questions.size()) {
-            currentQuestionId = -1;
+        if(question_array.size()>0) {
+            mcqStatusInfo.setText((questionPointerNum * 100) / question_array.size() + "%  pts: " + pointScore);
+        }
+        if (timerTextHelper.getTimeToLive() < 0 || questionPointerNum >= question_array.size()) {
+            timerTextHelper.stop();
+            questionPointerNum = -1;
             mQuestionText.setVisibility(View.GONE);
             mcqHeaderDetails.setVisibility(View.GONE);
 
 
-
-            DatabaseReference dbRefLeaderBoard = FirebaseDatabase.getInstance().getReference().child("LeaderBoard").child(mQuestionaire.getIconName().replace(".png",""));
+            DatabaseReference dbRefLeaderBoard = FirebaseDatabase.getInstance().getReference().child("LeaderBoard").child(mQuestionaire.getIconName().replace(".png", ""));
 
             dbRefLeaderBoard.addValueEventListener(new ValueEventListener() {
-                                                       @Override
-                                                       public void onDataChange(DataSnapshot dataSnapshot) {
-                                                           String pts = dataSnapshot.child("pointScore").getValue(String.class);
-                                                           if(pts == null ||pointScore > Integer.parseInt(pts)) {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String pts = dataSnapshot.child("pointScore").getValue(String.class);
+                    if (pts == null || pointScore > Integer.parseInt(pts)) {
 //                                                               Toast.makeText(getActivity(), "THISXXXXX:" + pts, Toast.LENGTH_LONG).show();
-                                                               Map<String, String> boardLeader = new HashMap<>();
-                                                               boardLeader.put("pointScore", pointScore + "");
-                                                               boardLeader.put("UserId", mAuth.getUid());
-                                                               boardLeader.put("userName", wizardUser.getUsername());
+                        Map<String, String> boardLeader = new HashMap<>();
+                        boardLeader.put("pointScore", pointScore + "");
+                        boardLeader.put("UserId", mAuth.getUid());
+                        boardLeader.put("userName", wizardUser.getUsername());
 
-                                                               dbRefLeaderBoard.setValue(boardLeader);
-                                                           }
-                                                       }
+                        dbRefLeaderBoard.setValue(boardLeader);
+                    }
+                }
 
-                                                       @Override
-                                                       public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                                       }
-                                                   });
+                }
+            });
 
             if (wizardUser != null) {
 
@@ -364,14 +365,14 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
 
             insertPointJsonFiles.setVisibility(View.VISIBLE);
             offlineQuestionView.setVisibility(View.GONE);
-            Toast.makeText(getActivity(), "THIS WAS LAST QUESTION", Toast.LENGTH_LONG).show();
+//            Toast.makeText(OnlineFragment.getActivity(), "THIS WAS LAST QUESTION", Toast.LENGTH_LONG).show();
 
             ResultDialog.showCustomDialog(this);
 //            pointScore = 0;
 
         } else {
             Questionaire questionaireHash;
-            final Question question = questions.get(currentQuestionId);
+            final Question question = question_array.get(questionPointerNum);
 
             List<Questionaire> qFilterListUnfilter = wizardUser.getQuestionaires();
             List<Questionaire> qFilterList = new ArrayList<>();
@@ -420,7 +421,7 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
                     @Override
                     public void onClick(View v) {
 //                        questionPointerNum =  nextQuestion(questions, questionPointerNum, true);
-                        getAnswer(questions, question.getAnswer_options().get(finalAid));
+                        getAnswer(question_array, question.getAnswer_options().get(finalAid));
                     }
                 });
                 ans.setText(question.getAnswer_options().get(aid).substring(2));
@@ -431,7 +432,7 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
         }
         DatabaseReference dbqREF = FirebaseDatabase.getInstance().getReference().child("Members").child(mAuth.getUid());
         dbqREF.setValue(wizardUser);
-        return 1 + currentQuestionId;
+        return 1 + questionPointerNum;
     }
 
 
@@ -508,69 +509,11 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
                         }
                         Collections.shuffle(questions);
 
-//                            questions.addAll(Arrays.asList(qs));
-
-//                            for (int i = 0; i < response.length(); i++) {
-//                                JSONObject question = response.getJSONObject(i);
 //
-//                                String questionText = question.getString("question_text");
-////                                int age = employee.getInt("age");
-////                                String mail = employee.getString("mail");
-//
-////                                mTextViewAnswers.append( response.length() + "\n\n");
-////                                mQuestionAnswer.append("\n" + questionText + "\n");
-//                                Question qi = new Question();
-//                                String qt = question.getString("question_text");
-//                                char ch = qt.substring(0, 1).charAt(0);
-//                                while (Character.isDigit(ch)) {
-//                                    qt = qt.substring(1);
-//                                    ch = qt.substring(0, 1).charAt(0);
-//
-//                                }
-//                                if (qt.startsWith(".")) {
-//                                    qt = qt.substring(1);
-//                                } else if (qt.startsWith(")")) {
-//                                    qt = qt.substring(1);
-//                                }
-//                                qi.setQuestion_text(qt);
-//                                String answer = "No answer was found ...";
-//
-//                                JSONArray questionOptions = new JSONArray(question.getString("answer_options"));
-//                                ArrayList<String> answers = new ArrayList<>();
-//                                for (int qa = 0; qa < questionOptions.length(); qa++) {
-//                                    answers.add(questionOptions.getString(qa));
-//                                    String tmpAnswer = question.getString("answer");
-//                                    Log.d("ANSWER", "onResponse: ");
-//                                    if (tmpAnswer.length() >= 6 && (questionOptions.getString(qa).startsWith(tmpAnswer.substring(5, 6)) ||
-//                                            questionOptions.getString(qa).substring(0, 3).contains(tmpAnswer.substring(5, 6)))) {
-//                                        answer = questionOptions.getString(qa);
-//                                    }
-//                                }
-//                                qi.setAnswer_options(answers);
-//
-//                                qi.setAnswer(answer);
-//
-//                                questions.add(qi);
-//                            }
-
-//                            Collections.shuffle(questions);
-//                            LinearLayout iconContainer = findViewById(R.id.icon_container);
-//                            iconContainer.setVisibility(View.GONE);
-//
-//                            ScrollView questionView = findViewById(R.id.question_view);
-//                            questionView.setVisibility(View.VISIBLE);
-//                            mQuestionText.setText("Questions? Press right to start testing your know what..");
-//                            insertPoint.setVisibility(View.GONE);
-////                            mQuestionBtnAnswer.setVisibility(View.VISIBLE);
-//                            mNextQuestion.setVisibility(View.VISIBLE);
-//
-//                            mMenu.findItem(R.id.timer_text).setVisible(true);
-//                            mMenu.findItem(R.id.rest_question).setTitle("Time Ticking: ");
-//                            mMenu.findItem(R.id.rest_question).setVisible(true);
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
+                        timerTextHelper.resetTime();
+                        timerTextHelper.start();
+                        mcqHeaderDetails.setVisibility(View.VISIBLE);
+                        pointScore = 0;
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -581,13 +524,10 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
 
         mQueue.add(request);
 
-        timerTextHelper.resetTime();
-        mcqHeaderDetails.setVisibility(View.VISIBLE);
-        pointScore = 0;
+
         return questions;
 
     }
-
 
     public Activity getmActivity() {
         return mActivity;
@@ -604,7 +544,6 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
     public ArrayList<Question> getQuestion_array() {
         return question_array;
     }
-
 
 
 }

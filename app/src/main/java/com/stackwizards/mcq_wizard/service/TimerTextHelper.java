@@ -4,18 +4,21 @@ import android.os.Handler;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.stackwizards.mcq_wizard.fragment.OnlineFragment;
+
 public class TimerTextHelper implements Runnable {
     private final Handler handler = new Handler();
     private final TextView textView;
-//    private final ClipData.Item item;
+    //    private final ClipData.Item item;
     private volatile long startTime;
     private volatile long elapsedTime;
     private long timeToLive = 60;
+    private OnlineFragment fragment;
 
 
-
-    public TimerTextHelper(TextView textView) {
+    public TimerTextHelper(OnlineFragment fragment, TextView textView) {
         this.textView = textView;
+        this.fragment = fragment;
     }
 
     @Override
@@ -31,6 +34,12 @@ public class TimerTextHelper implements Runnable {
 
         if (elapsedTime == -1) {
             handler.postDelayed(this, 1000);
+        }
+
+        if (timeToLive < 0) {
+            fragment.questionPointerNum = fragment.nextQuestion();
+            timeToLive = 60;
+            stop();
         }
     }
 
@@ -53,13 +62,15 @@ public class TimerTextHelper implements Runnable {
         return timeToLive;
     }
 
-    public void bonusTime(){
+    public void bonusTime() {
         this.timeToLive = 10 + timeToLive;
     }
-    public void deducTime(){
+
+    public void deducTime() {
         this.timeToLive = this.timeToLive - 5;
     }
-    public void resetTime(){
+
+    public void resetTime() {
         this.timeToLive = 60;
     }
 }

@@ -7,15 +7,15 @@
         <item
             android:id="@+id/nav_online"
             android:icon="@drawable/operating_system"
-            android:title="Tournament" />
+            android:title="Online Test" />
         <item
             android:id="@+id/nav_offline"
             android:icon="@drawable/oflline_icon"
-            android:title="Training" />
+            android:title="Offline Training" />
         <item
             android:id="@+id/nav_download"
             android:icon="@drawable/status_icon"
-            android:title="Market" />
+            android:title="Download Questionaires" />
         <item
             android:id="@+id/nav_manual"
             android:icon="@drawable/stack_wizard_user_manual"
@@ -31,6 +31,7 @@
             <item
                 android:id="@+id/nav_add_mcq"
                 android:icon="@drawable/stack_app_menu_edit"
+                android:visible="false"
                 android:title="Add MCQ" />
             <item
                 android:id="@+id/nav_leader_board"

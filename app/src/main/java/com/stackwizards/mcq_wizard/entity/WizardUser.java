@@ -8,6 +8,7 @@ public class WizardUser {
     String username;
     String email;
     String bio;
+    int role = 0;
     int age;
 
     ArrayList<Questionaire> questionaires;
@@ -50,8 +51,13 @@ public class WizardUser {
         this.age = age;
     }
 
+    public int getRole() {
+        return role;
+    }
 
-
+    public void setRole(int role) {
+        this.role = role;
+    }
 
     public ArrayList<Questionaire> getQuestionaires() {
         return questionaires;

@@ -1,5 +1,6 @@
 package com.stackwizards.mcq_wizard;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -13,11 +14,14 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v7.view.menu.MenuView;
 import android.util.DisplayMetrics;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 
@@ -61,6 +65,7 @@ public class MainActivity extends AppCompatActivity
     DatabaseReference dbRef;
     WizardUser wizardUser;
     private RequestQueue mQueue;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +74,7 @@ public class MainActivity extends AppCompatActivity
 //        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
@@ -83,6 +88,16 @@ public class MainActivity extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
 
+//        getFireUser();
+
+        loadFragment(new HelpInfoFragment());
+//        View drawer = findViewById(R.id.nav_view);
+//
+//        ((MenuItem)drawer.findViewById(R.id.nav_add_mcq)).setVisible(true);
+
+    }
+
+    private void getFireUser() {
         dbRef = FirebaseDatabase.getInstance().getReference().child("Members").child(mAuth.getUid());
 
 
@@ -98,6 +113,12 @@ public class MainActivity extends AppCompatActivity
                 } else {
 //                    editText.setText(wizardUser.getUsername());
 //                    ProfileActivity.this.setTitle(wizardUser.getUsername());
+                    Menu nav_Menu = navigationView.getMenu();
+                    if(wizardUser.getRole()==7){
+                        nav_Menu.findItem(R.id.nav_add_mcq).setVisible(true);
+                    }else{
+                        nav_Menu.findItem(R.id.nav_add_mcq).setVisible(false);
+                    }
                     loadUserDrawer();
 
                 }
@@ -116,9 +137,6 @@ public class MainActivity extends AppCompatActivity
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
-
-        loadFragment(new HelpInfoFragment());
-
     }
 
     private void loadUserDrawer() {
@@ -166,8 +184,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        getFireUser();
         loadUserDrawer();
-        ( (DrawerLayout) findViewById(R.id.drawer_layout)).openDrawer(GravityCompat.START);
+        DrawerLayout drawer =  ( (DrawerLayout) findViewById(R.id.drawer_layout));
+        drawer.openDrawer(GravityCompat.START);
+
+
     }
 
 
@@ -180,14 +202,15 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
+//
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main, menu);
+//        getMenuInflater().inflate(R.menu.activity_main_drawer, menu);
+//        menu.findItem(R.id.nav_add_mcq).setVisible(false);
 //        return true;
 //    }
-//
+
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {
 //        // Handle action bar item clicks here. The action bar will
@@ -348,4 +371,41 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        super.onCreateOptionsMenu(menu);
+//        menu.findItem(R.id.nav_add_mcq).setVisible(true);
+////                findViewById(R.id.nav_add_mcq)).setVisible(true);
+//
+//        return true;
+//
+//    }
+
+    /**
+     * Prepare the Screen's standard options menu to be displayed.  This is
+     * called right before the menu is shown, every time it is shown.  You can
+     * use this method to efficiently enable/disable items or otherwise
+     * dynamically modify the contents.
+     *
+     * <p>The default implementation updates the system menu items based on the
+     * activity's state.  Deriving classes should always call through to the
+     * base class implementation.
+     *
+     * @param menu The options menu as last shown or first initialized by
+     *             onCreateOptionsMenu().
+     * @return You must return true for the menu to be displayed;
+     * if you return false it will not be shown.
+     * @see #onCreateOptionsMenu
+     */
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//                super.onPrepareOptionsMenu(menu);
+//        menu.findItem(R.id.nav_add_mcq).setVisible(true);
+//
+//        return true;
+//
+//    }
 }

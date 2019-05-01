@@ -25,7 +25,7 @@
             android:layout_height="350dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/stack_app_image_default" />
+            android:src="@drawable/stack_wizard_user" />
 
     </RelativeLayout>
 
