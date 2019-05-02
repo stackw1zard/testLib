@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        updateWizardUser();
+        syncWizardUser();
     }
 
     @Override
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity
         ((ImageView) findViewById(R.id.profileImageView)).setImageBitmap(getRoundedCornerBitmap(defaultProfilPicture, 10));
     }
 
-    private void updateWizardUser() {
+    private void syncWizardUser() {
         dbRef = FirebaseDatabase.getInstance().getReference().child("Members").child(mAuth.getUid());
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
