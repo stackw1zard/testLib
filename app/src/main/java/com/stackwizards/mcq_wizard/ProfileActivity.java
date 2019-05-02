@@ -10,8 +10,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,10 +32,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.stackwizards.mcq_wizard.entity.WizardUser;
+import com.stackwizards.mcq_wizard.service.FirebaseServiceUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -92,7 +89,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if (wizardUser == null) {
 //                    Toast.makeText(ProfileActivity.this, "zzz" + mAuth. , Toast.LENGTH_LONG).show();
 
-                    userDataIsNull(dbRef);
+//                    FirebaseServiceUtils.userDataIsNull(mAuth, dbRef);
                 } else {
                     editText.setText(wizardUser.getUsername());
                     ProfileActivity.this.setTitle(wizardUser.getUsername());
@@ -142,8 +139,6 @@ public class ProfileActivity extends AppCompatActivity {
 
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
-
-
 
 
         findViewById(R.id.buttonUpdate).setOnClickListener(new View.OnClickListener() {
@@ -210,7 +205,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         } else {
-            userDataIsNull(dbRef);
+//            FirebaseServiceUtils.userDataIsNull(mAuth, dbRef);
         }
     }
 
@@ -259,54 +254,14 @@ public class ProfileActivity extends AppCompatActivity {
             uriProfileImage = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriProfileImage);
-
-                Bitmap resized = Bitmap.createScaledBitmap(bitmap, 124, 124, true);
-
-
-                imageView.setImageBitmap(resized);
-                uploadBitmapFirebase(resized);
-//                uploadImageToFirebaseStorage(resized);
-
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 124, 124, true);
+                imageView.setImageBitmap(scaledBitmap);
+                FirebaseServiceUtils.uploadProfilePictureToFirebase(mAuth, scaledBitmap, progressBar);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-
-    private void uploadImageToFirebaseStorage(Bitmap bitmap) {
-
-        final StorageReference profileImageRef =
-                FirebaseStorage.getInstance().getReference("profilepics/" + mAuth.getCurrentUser().getUid() + "/profile.jpg");
-
-        if (uriProfileImage != null) {
-            progressBar.setVisibility(View.VISIBLE);
-            profileImageRef.putFile(uriProfileImage)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressBar.setVisibility(View.GONE);
-                            profileImageUrl = profileImageRef.getDownloadUrl().toString();
-                            Bitmap bitmap = null;
-                            try {
-                                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriProfileImage);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-                            imageView.setImageBitmap(bitmap);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressBar.setVisibility(View.GONE);
-
-                            Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }
-    }
-
 
     private void showImageChooser() {
         Intent intent = new Intent();
@@ -315,58 +270,6 @@ public class ProfileActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Profile Image"), CHOOSE_IMAGE);
     }
 
-
-    private void userDataIsNull(DatabaseReference dbRefDefault) {
-        WizardUser wizz = new WizardUser();
-        FirebaseUser muser = mAuth.getCurrentUser();
-         String name = muser.getEmail().split("@")[0];
-
-        wizz.setUsername(name);
-//        wizz.setEmail("bla@b.com");
-        wizz.setBio("Not much to say");
-//        wizz.setAge(23);
-////        wizz.notes.put("mt", 12);
-////        wizz.notes.put("java", 2);
-//        Map<String, Integer> notes = new HashMap<>();
-//        notes.put("Starter", 1);
-//       wizz.setNotes(notes);
-//        dbRef.push().setValue(wizz);
-        dbRefDefault.setValue(wizz);
-
-
-    }
-
-
-    private void uploadBitmapFirebase(Bitmap bitmap){
-
-        if (bitmap != null) {
-            progressBar.setVisibility(View.VISIBLE);
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] data = baos.toByteArray();
-
-            final StorageReference profileImageRef =
-                    FirebaseStorage.getInstance().getReference("profilepics/" + mAuth.getCurrentUser().getUid() + "/profile.jpg");
-
-            UploadTask uploadTask = profileImageRef.putBytes(data);
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                    progressBar.setVisibility(View.GONE);
-//                    profileImageUrl = profileImageRef.getDownloadUrl().toString();
-
-                }
-            });
-
-        }
-    }
 
 }
 
