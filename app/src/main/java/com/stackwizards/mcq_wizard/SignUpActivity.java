@@ -20,9 +20,8 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
-    ProgressBar progressBar;
-    EditText editTextEmail, editTextPassword;
-
+    private ProgressBar progressBar;
+    private EditText editTextEmail, editTextPassword;
     private FirebaseAuth mAuth;
 
     @Override
@@ -44,6 +43,21 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         findViewById(R.id.buttonSignUp).setOnClickListener(this);
         findViewById(R.id.textViewLogin).setOnClickListener(this);
     }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.buttonSignUp:
+                registerUser();
+                break;
+
+            case R.id.textViewLogin:
+                finish();
+                startActivity(new Intent(this, MainActivity.class));
+                break;
+        }
+    }
+
 
     private void registerUser() {
         String email = editTextEmail.getText().toString().trim();
@@ -97,17 +111,4 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.buttonSignUp:
-                registerUser();
-                break;
-
-            case R.id.textViewLogin:
-                finish();
-                startActivity(new Intent(this, MainActivity.class));
-                break;
-        }
-    }
 }
