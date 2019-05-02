@@ -87,32 +87,35 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_online) {
-            loadFragment(new OnlineFragment());
-        } else if (id == R.id.nav_offline) {
-            loadFragment(new OfflineFragment());
-        } else if (id == R.id.nav_download) {
-            loadFragment(new DownloadFragment());
-        } else if (id == R.id.nav_manual) {
-            loadFragment(new HelpInfoFragment());
-        } else if (id == R.id.nav_leader_board) {
-            loadFragment(new LeaderBoardFragment());
-        } else if (id == R.id.nav_profile) {
-            startActivity(new Intent(this, ProfileActivity.class));
-        } else if (id == R.id.nav_add_mcq) {
-//            finish();
-            startActivity(new Intent(this, EditActivity.class));
-        } else if (id == R.id.nav_logout) {
-            FirebaseAuth.getInstance().signOut();
-            finish();
-            startActivity(new Intent(this, LoginActivity.class));
+        switch (item.getItemId()){
+            case R.id.nav_online:
+                loadFragment(new OnlineFragment());
+                break;
+            case R.id.nav_offline:
+                loadFragment(new OfflineFragment());
+                break;
+            case R.id.nav_download:
+                loadFragment(new DownloadFragment());
+                break;
+            case R.id.nav_manual:
+                loadFragment(new HelpInfoFragment());
+                break;
+            case R.id.nav_leader_board:
+                loadFragment(new LeaderBoardFragment());
+                break;
+            case R.id.nav_profile:
+                startActivity(new Intent(this, ProfileActivity.class));
+                break;
+            case R.id.nav_add_mcq:
+                startActivity(new Intent(this, EditActivity.class));
+                break;
+            case R.id.nav_logout:
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                startActivity(new Intent(this, LoginActivity.class));
+                break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
