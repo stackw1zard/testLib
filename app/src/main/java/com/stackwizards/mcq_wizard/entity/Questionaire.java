@@ -2,6 +2,10 @@ package com.stackwizards.mcq_wizard.entity;
 
 import java.util.ArrayList;
 
+/*  This class is used to serialised the questionaires to be stored and retrieved from firebase.
+    The json files containing the question were stored on a different web server.
+    This class will only contain the url to the json file.
+ */
 public class Questionaire {
 
     private String uid;
@@ -10,10 +14,6 @@ public class Questionaire {
     private ArrayList<QuestionStats> questionStats;
 
     private int score;
-
-
-    public Questionaire() {
-    }
 
     public String getIconName() {
         return iconName;
@@ -31,7 +31,6 @@ public class Questionaire {
         this.jsonUrl = jsonUrl;
     }
 
-
     public ArrayList<QuestionStats> getQuestionStats() {
         return questionStats;
     }
@@ -39,8 +38,6 @@ public class Questionaire {
     public void setQuestionStats(ArrayList<QuestionStats> questionStats) {
         this.questionStats = questionStats;
     }
-
-
 
     public int getScore() {
         return score;

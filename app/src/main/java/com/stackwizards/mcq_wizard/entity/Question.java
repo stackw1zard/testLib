@@ -2,14 +2,18 @@ package com.stackwizards.mcq_wizard.entity;
 
 import java.util.ArrayList;
 
+/*  This class will hold the questions and respective answers, once the downloaded json files are parsed
+    The numOfTimesAnsweredCorrectly will be used to sort, so as those answered correctly are less frequently asked
+    As the question used, were collected using web scrapping, most of them do not have hints
+ */
 public class Question {
-    String index = null;
-    String question_text;
-    String answer;
-    String hint;
-    int numOfTimesAsked = 0;
-    int numOfTimesAnsweredCorrectly = 0;
-    ArrayList<String> answer_options;
+    private String index = null;
+    private String question_text;
+    private String answer;
+    private String hint;
+    private int numOfTimesAsked = 0;
+    private int numOfTimesAnsweredCorrectly = 0;
+    private ArrayList<String> answer_options;
 
     public String getQuestion_text() {
         return question_text;
@@ -34,7 +38,6 @@ public class Question {
     public void setHint(String hint) {
         this.hint = hint;
     }
-
 
     public int getNumOfTimesAsked() {
         return numOfTimesAsked;

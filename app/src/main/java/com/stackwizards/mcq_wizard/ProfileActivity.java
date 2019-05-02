@@ -263,13 +263,13 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+
     private void showImageChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Profile Image"), CHOOSE_IMAGE);
     }
-
 
 }
 

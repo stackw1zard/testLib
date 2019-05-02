@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent(this, ProfileActivity.class));
                 break;
             case R.id.nav_add_mcq:
-                startActivity(new Intent(this, EditActivity.class));
+                startActivity(new Intent(this, UploadQuestionaireActivity.class));
                 break;
             case R.id.nav_logout:
                 FirebaseAuth.getInstance().signOut();
