@@ -30,7 +30,7 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".SignUpActivity" />
-        <activity android:name=".UploadQuestionaireActivity" />
+        <activity android:name=".AddQuestionaireActivity" />
         <activity android:name=".ProfileActivity" />
 
     </application>

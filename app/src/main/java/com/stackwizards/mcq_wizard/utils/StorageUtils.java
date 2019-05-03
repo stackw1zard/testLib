@@ -1,8 +1,8 @@
-package com.stackwizards.mcq_wizard.service;
+package com.stackwizards.mcq_wizard.utils;
 
 import android.os.Environment;
 
-public class Utils {
+public class StorageUtils {
 
     public static boolean isExternalStorageReadOnly() {
         String extStorageState = Environment.getExternalStorageState();
@@ -18,4 +18,5 @@ public class Utils {
         }
         return false;
     }
+
 }

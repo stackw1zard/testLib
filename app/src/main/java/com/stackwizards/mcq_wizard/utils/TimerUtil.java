@@ -1,12 +1,11 @@
-package com.stackwizards.mcq_wizard.service;
+package com.stackwizards.mcq_wizard.utils;
 
 import android.os.Handler;
-import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.stackwizards.mcq_wizard.fragment.OnlineFragment;
 
-public class TimerTextHelper implements Runnable {
+public class TimerUtil implements Runnable {
     private final Handler handler = new Handler();
     private final TextView textView;
     //    private final ClipData.Item item;
@@ -16,7 +15,7 @@ public class TimerTextHelper implements Runnable {
     private OnlineFragment fragment;
 
 
-    public TimerTextHelper(OnlineFragment fragment, TextView textView) {
+    public TimerUtil(OnlineFragment fragment, TextView textView) {
         this.textView = textView;
         this.fragment = fragment;
     }

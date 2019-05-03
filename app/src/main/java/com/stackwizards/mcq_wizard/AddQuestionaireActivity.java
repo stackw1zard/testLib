@@ -18,22 +18,18 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.stackwizards.mcq_wizard.entity.Questionaire;
-import com.stackwizards.mcq_wizard.entity.WizardUser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-public class UploadQuestionaireActivity extends AppCompatActivity {
+public class AddQuestionaireActivity extends AppCompatActivity {
 
     private static final int CHOOSE_IMAGE = 101;
 
@@ -44,8 +40,7 @@ public class UploadQuestionaireActivity extends AppCompatActivity {
     Uri uriProfileImage;
     ProgressBar progressBar;
     FirebaseAuth mAuth;
-    DatabaseReference dbRef;
-    WizardUser wizardUser;
+
     Bitmap bitmap;
 
 
@@ -70,26 +65,13 @@ public class UploadQuestionaireActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        dbRef = FirebaseDatabase.getInstance().getReference().child("Members");
-        dbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                wizardUser = dataSnapshot.getValue(WizardUser.class);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-
         findViewById(R.id.buttonUpdate).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (bitmap != null) {
                     uploadQuestionaireToFirebaseStorage(bitmap);
                 }else {
-                    Toast.makeText(UploadQuestionaireActivity.this, "Bitmap is empty...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddQuestionaireActivity.this, "Bitmap is empty...", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -160,7 +142,7 @@ public class UploadQuestionaireActivity extends AppCompatActivity {
                     questionaire.setJsonUrl(jsonUrl);
 
                     String randomId = UUID.randomUUID().toString();
-                    dbRef = FirebaseDatabase.getInstance().getReference().child("Questionaires").child(randomId);
+                    DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Questionaires").child(randomId);
                     dbRef.setValue(questionaire);
 
                     progressBar.setVisibility(View.GONE);

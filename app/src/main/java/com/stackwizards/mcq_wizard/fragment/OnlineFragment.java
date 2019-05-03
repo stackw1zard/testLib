@@ -43,7 +43,7 @@ import com.stackwizards.mcq_wizard.dialog.ResultDialog;
 import com.stackwizards.mcq_wizard.entity.Question;
 import com.stackwizards.mcq_wizard.entity.Questionaire;
 import com.stackwizards.mcq_wizard.entity.WizardUser;
-import com.stackwizards.mcq_wizard.service.TimerTextHelper;
+import com.stackwizards.mcq_wizard.utils.TimerUtil;
 
 import org.json.JSONArray;
 
@@ -93,7 +93,7 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
     private int soundIdGameover;
     private int soundIdStart;
 
-    TimerTextHelper timerTextHelper;
+    TimerUtil timerUtil;
 
     private Questionaire mQuestionaire = null;
 
@@ -235,7 +235,7 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
 
 
         setAudioManager();
-        timerTextHelper = new TimerTextHelper(this, mTimerText);
+        timerUtil = new TimerUtil(this, mTimerText);
 
         return view;
     }
@@ -282,8 +282,8 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
         if(question_array.size()>0) {
             mcqStatusInfo.setText((questionPointerNum * 100) / question_array.size() + "%  pts: " + pointScore);
         }
-        if (timerTextHelper.getTimeToLive() < 0 || questionPointerNum >= question_array.size()) {
-            timerTextHelper.stop();
+        if (timerUtil.getTimeToLive() < 0 || questionPointerNum >= question_array.size()) {
+            timerUtil.stop();
             questionPointerNum = -1;
             mQuestionText.setVisibility(View.GONE);
             mcqHeaderDetails.setVisibility(View.GONE);
@@ -455,7 +455,7 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
                         soundPool.play(soundIdSuccess, volume * 2, volume * 2, 1, 0, 1f);
                         Log.e("Test sound", "Played sound success");
                         btn.setBackgroundColor(0xFFA4C639);
-                        timerTextHelper.bonusTime();
+                        timerUtil.bonusTime();
                     }
                 } else {
                     if (loaded) {
@@ -463,7 +463,7 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
                         soundPool.play(soundIdFailure, volume, volume, 1, 0, 1f);
                         Log.e("Test sound", "Played sound failure");
                         btn.setBackgroundColor(0xF0FFE666);
-                        timerTextHelper.deducTime();
+                        timerUtil.deducTime();
                     }
                 }
             }
@@ -510,8 +510,8 @@ public class OnlineFragment extends Fragment implements DialogResultInterface {
                         Collections.shuffle(questions);
 
 //
-                        timerTextHelper.resetTime();
-                        timerTextHelper.start();
+                        timerUtil.resetTime();
+                        timerUtil.start();
                         mcqHeaderDetails.setVisibility(View.VISIBLE);
                         pointScore = 0;
                     }

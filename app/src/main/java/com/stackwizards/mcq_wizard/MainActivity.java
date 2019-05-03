@@ -36,12 +36,12 @@ import com.stackwizards.mcq_wizard.fragment.HelpInfoFragment;
 import com.stackwizards.mcq_wizard.fragment.LeaderBoardFragment;
 import com.stackwizards.mcq_wizard.fragment.OfflineFragment;
 import com.stackwizards.mcq_wizard.fragment.OnlineFragment;
-import com.stackwizards.mcq_wizard.service.FirebaseServiceUtils;
+import com.stackwizards.mcq_wizard.utils.FirebaseServiceUtils;
 
-import static com.stackwizards.mcq_wizard.service.FirebaseServiceUtils.uploadProfilePictureToFirebase;
-import static com.stackwizards.mcq_wizard.service.GraphicsUtils.getRoundedCornerBitmap;
-import static com.stackwizards.mcq_wizard.service.Utils.isExternalStorageAvailable;
-import static com.stackwizards.mcq_wizard.service.Utils.isExternalStorageReadOnly;
+import static com.stackwizards.mcq_wizard.utils.FirebaseServiceUtils.uploadProfilePictureToFirebase;
+import static com.stackwizards.mcq_wizard.utils.GraphicsUtils.getRoundedCornerBitmap;
+import static com.stackwizards.mcq_wizard.utils.StorageUtils.isExternalStorageAvailable;
+import static com.stackwizards.mcq_wizard.utils.StorageUtils.isExternalStorageReadOnly;
 
 
 public class MainActivity extends AppCompatActivity
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent(this, ProfileActivity.class));
                 break;
             case R.id.nav_add_mcq:
-                startActivity(new Intent(this, UploadQuestionaireActivity.class));
+                startActivity(new Intent(this, AddQuestionaireActivity.class));
                 break;
             case R.id.nav_logout:
                 FirebaseAuth.getInstance().signOut();

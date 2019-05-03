@@ -7,14 +7,16 @@ import com.stackwizards.mcq_wizard.entity.Question;
 
 import java.util.ArrayList;
 
+/*
+    Use as callback, to display result in the onlineFragment questionnaire challenge
+ */
 public interface DialogResultInterface {
 
+     Activity getmActivity();
 
-    public Activity getmActivity();
+     View getView();
 
-    public View getView();
+     int getPointScore();
 
-    public int getPointScore();
-
-    public ArrayList<Question> getQuestion_array();
+     ArrayList<Question> getQuestion_array();
 }

@@ -1,7 +1,5 @@
-package com.stackwizards.mcq_wizard.service;
+package com.stackwizards.mcq_wizard.utils;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -9,9 +7,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.v7.app.AppCompatActivity;
-
-import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 public class GraphicsUtils {
 

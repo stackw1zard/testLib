@@ -1,4 +1,4 @@
-package com.stackwizards.mcq_wizard.service;
+package com.stackwizards.mcq_wizard.utils;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;

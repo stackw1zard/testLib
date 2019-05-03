@@ -11,24 +11,21 @@ import com.stackwizards.mcq_wizard.R;
 
 public class ResultDialog {
 
-    //  CHANGE TO INTERFACE TO SUPPORT MORE THAN THIS
+    //  Todo: clean the callback interface
     public static void showCustomDialog(DialogResultInterface dialogContext) {
-//        Activity activity, int points,int msgIndex, View view;
+        //Activity activity, int points,int msgIndex, View view;
         //before inflating the custom alert dialog layout, we will get the current activity viewgroup
         String[] results = {"Dude, you'll have to try harder", "Almost There, keep at it.", "A Real Wizard get more that 100%", "You are my Master ;)"};
         ViewGroup viewGroup = dialogContext.getView().findViewById(android.R.id.content);
 
-
         //then we will inflate the custom alert dialog xml that we created
         View dialogView = LayoutInflater.from(dialogContext.getmActivity().getApplicationContext()).inflate(R.layout.my_dialog, viewGroup, false);
-
 
         //Now we need an AlertDialog.Builder object
         AlertDialog.Builder builder = new AlertDialog.Builder(dialogContext.getmActivity());
 
         //setting the view of the builder to our custom view that we already inflated
         builder.setView(dialogView);
-
 
         //finally creating the alert dialog and displaying it
         AlertDialog alertDialog = builder.create();
@@ -37,9 +34,6 @@ public class ResultDialog {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-//                startActivity(new Intent(NoConnectionActivity.this, StatusActivity.class));
-//                ((AppCompatActivity)NoConnectionActivity.this).finish();
-
             }
         });
 
@@ -69,7 +63,6 @@ public class ResultDialog {
         }
 
         alertDialog.show();
-//
     }
 
 
